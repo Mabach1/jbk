@@ -1,7 +1,12 @@
-#include "./jbk_for_tga.h"
+#define DEBUG
+#include "jbk_for_tga.h"
 
 void compress(CompressArgs *args) {
-    (void)args;
+    TGA_File tga = tga_open_file(args->input);
+
+    tga_header_print(&tga.header);
+
+    tga_free(&tga);
 }
 
 void decompress(DecompressArgs *args) {
