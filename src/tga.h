@@ -46,10 +46,22 @@ typedef struct _TGA_File {
     Pixel *image;
 } TGA_File;
 
+/**
+ * @brief   opens a TGA file and returns struct with TGA `header` and pointer
+ *          to memory of `pixels`
+ * 
+ * @param   filename 
+ * @return  TGA_File 
+ */
 TGA_File tga_open_file(const char *filename);
+
+/**
+ * @brief   freeing of TGA_File struct
+ * @param   file 
+ */
 void tga_free(TGA_File *file);
 
-#ifdef DEBUG
+#ifdef DEBUG    /* in case of debuging */
 void tga_header_print(TGA_Header *header);
 #endif
 
