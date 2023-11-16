@@ -33,7 +33,18 @@ typedef struct _CompressingArgs {
     int max_diff;
 } CompressArgs;
 
+/**
+ * @brief   returns a struct of arguments needed for `commpression`
+ * 
+ * @param   argc
+ * @param   argv 
+ * @return  CompressArgs 
+ */
 CompressArgs compress_args_slurp(int argc, const char **argv);
+/**
+ * @brief   freeing of compression argumnts
+ * @param   args 
+ */
 void compress_args_free(CompressArgs *args);
 
 typedef struct _DecompressArgs {
@@ -41,7 +52,18 @@ typedef struct _DecompressArgs {
     char *output;
 } DecompressArgs;
 
+/**
+ * @brief   returns a struct of arguments needed for `decompression`
+ * 
+ * @param   argc 
+ * @param   argv 
+ * @return  DecompressArgs 
+ */
 DecompressArgs decompress_args_slurp(int argc, const char **argv);
+/**
+ * @brief   freeing of decompression arguments
+ * @param   args 
+ */
 void decompress_args_free(DecompressArgs *args);
 
 #endif /* __JBK_ARGUMENT_PARSER__ */

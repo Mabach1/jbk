@@ -3,9 +3,9 @@
 
 void compress(CompressArgs *args) {
     TGA_File tga = tga_open_file(args->input);
-
+#ifdef DEBUG
     tga_header_print(&tga.header);
-
+#endif
     tga_free(&tga);
 }
 
