@@ -1,17 +1,8 @@
-/**
- * @file        tga.h
- * @author      Matej Baliga, FEI VSB-TUO; BAL0312 (matej.baliga.stv@vsb.cz)
- * @brief       Simple function for manipulating with TGA files
- * @date        2023-11-16
- *
- * @copyright   Copyright (c) 2023
- *
- */
 #ifndef __TGA_H__
 #define __TGA_H__
 
-#include <stdio.h>  /* print(), FILE, fopen() */
-#include <stdlib.h> /* malloc(), free() */
+#include <stdio.h>  
+#include <stdlib.h> 
 #include <assert.h>
 #include <stdint.h>
 
@@ -46,25 +37,8 @@ typedef struct _TGA_File {
     Pixel *image;
 } TGA_File;
 
-/**
- * @brief   opens a TGA file and returns struct with TGA `header` and pointer
- *          to memory of `pixels`
- *
- * @param   filename
- * @return  TGA_File
- */
 TGA_File tga_open_file(const char *filename);
-
-/**
- * @brief   freeing of `TGA_File` struct
- * @param   file
- */
 void tga_free(TGA_File *file);
-
-#ifdef DEBUG /* in case of debuging */
-void tga_header_print(TGA_Header *header);
-#endif
-
 void tga_save_file(const char *filename, TGA_File *file);
 
 #endif /* TGA_H */

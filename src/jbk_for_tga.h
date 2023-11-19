@@ -11,7 +11,7 @@
 #define __JBK_FOR_TGA__
 
 #include "jbk.h"
-#include "jbk_argument_parser.h"
+#include "jbk_ui.h"
 #include "tga.h"
 
 #endif /* JBK_FOR_TGA */
