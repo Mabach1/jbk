@@ -12,12 +12,13 @@ void compress(CompressArgs *args) {
 }
 
 void decompress(DecompressArgs *args) {
-    JBK_File jbk = jbk_load_file(args->input);
+    JBK_File jbk = jbk_open_file(args->input);
     TGA_File tga = jbk_decompress_to_tga(&jbk);
 
     tga_save_file(args->output, &tga);
 
     tga_close_file(&tga);
+    jbk_close_file(&jbk);
 }
 
 int main(int argc, const char **argv) {

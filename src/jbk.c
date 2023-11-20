@@ -80,11 +80,11 @@ void jbk_save_file(const char *filename, JBK_Pixel *image, TGA_File *tga_file, u
 
     assert(fwrite(image, sizeof(JBK_Pixel) * len, 1, file_ptr) == 1);
 
-    free(image);
     fclose(file_ptr);
+    free(image);
 }
 
-JBK_File jbk_load_file(const char *filename) {
+JBK_File jbk_open_file(const char *filename) {
     FILE *file_ptr = fopen(filename, "rb");
 
     if (!file_ptr) {
@@ -105,6 +105,10 @@ JBK_File jbk_load_file(const char *filename) {
     fclose(file_ptr);
 
     return res;
+}
+
+void jbk_close_file(JBK_File *file) {
+    free(file->image);
 }
 
 TGA_File jbk_decompress_to_tga(JBK_File *jbk_file) {
