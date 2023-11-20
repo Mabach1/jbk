@@ -71,6 +71,11 @@ void jbk_save_file(const char *filename, JBK_Pixel *image, TGA_File *tga_file, u
  */
 JBK_File jbk_open_file(const char *filename);
 
+/**
+ * @brief   close jbk file, needs to be called when being done working with jbk file
+ * 
+ * @param   file 
+ */
 void jbk_close_file(JBK_File *file);
 
 #endif /* JBK_H */
