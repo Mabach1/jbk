@@ -2,9 +2,7 @@
 
 #define BLOCK_POS(i, j, k, l, w) l + (w * k) + j + (i * w)
 
-int pixel_diff(Pixel p1, Pixel p2) {
-    return (abs(p1.blue - p2.blue) + (abs(p1.green - p2.green)) + (abs(p1.red - p2.red)));
-}
+int pixel_diff(Pixel p1, Pixel p2) { return (abs(p1.blue - p2.blue) + (abs(p1.green - p2.green)) + (abs(p1.red - p2.red))); }
 
 JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, int block_size, int max_compress_difference, uint32_t *alen) {
     if (block_size < 0 || (tga_file->header.width * tga_file->header.height) % block_size != 0) {

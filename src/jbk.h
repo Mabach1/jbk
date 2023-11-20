@@ -10,12 +10,12 @@
 #ifndef __JBK_H__
 #define __JBK_H__
 
-#include "tga.h"
-
-#include <stdio.h>  
-#include <stdlib.h> 
 #include <assert.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "tga.h"
 
 typedef struct _JBK_Pixel {
     Pixel pixel;

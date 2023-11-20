@@ -14,12 +14,12 @@ Pixel *tga_load_image(TGA_Header *header, FILE *file_ptr) {
 
 TGA_File tga_open_file(const char *filename) {
     FILE *file_ptr = fopen(filename, "rb");
-    
+
     if (!file_ptr) {
         fprintf(stderr, "\033[31m+ JBK Error:\033[0m Coudn't open [%s] for compression!\n+ Aborting with 1!\n", filename);
         exit(EXIT_FAILURE);
     }
-    
+
     TGA_File file = {0};
 
     file.header = tga_load_header(file_ptr);

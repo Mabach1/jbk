@@ -198,16 +198,23 @@ void jbk_info(void) {
     fprintf(stdout, "  + JBK is a custom format that works similiary to JPEG.\n");
     fprintf(stdout, "+ Usage\n");
     fprintf(stdout, "  + Compression\n");
-    fprintf(stdout, "  - ./jbk compress --input [path to TGA file] --output [path to JBK file] --max-diff [max difference of neighbouring piexls] --block-size [block size]\n");
+    fprintf(stdout,
+            "  - ./jbk compress --input [path to TGA file] --output [path to JBK file] --max-diff [max difference of neighbouring piexls] "
+            "--block-size [block size]\n");
     fprintf(stdout, "  + Decompression\n");
     fprintf(stdout, "  - ./jbk decompress --input [path to JBK file] --output [path to TGA file]\n");
-
 }
 
 void jbk_show_info(JBK_Action action, CompressArgs *ca, DecompressArgs *da) {
     switch (action) {
-        case COMPRESS: jbk_compress_show_info(ca); return;
-        case DECOMPRESS: jbk_decompress_show_info(da); return;
-        case INFO: jbk_info(); return;
+        case COMPRESS:
+            jbk_compress_show_info(ca);
+            return;
+        case DECOMPRESS:
+            jbk_decompress_show_info(da);
+            return;
+        case INFO:
+            jbk_info();
+            return;
     }
 }

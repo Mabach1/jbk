@@ -1,10 +1,10 @@
 #ifndef __TGA_H__
 #define __TGA_H__
 
-#include <stdio.h>  
-#include <stdlib.h> 
 #include <assert.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #pragma pack(push, 1)
 typedef struct _TGA_Header {
