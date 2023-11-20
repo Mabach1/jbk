@@ -1,3 +1,12 @@
+/**
+ * @file        tga.h
+ * @author      Matej Baliga, FEI VSB-TUO, BAL0312 (matej.baliga.stv@vsb.cz)
+ * @brief       Basic functions for working with TGA files 
+ * @date        2024-1-2
+ * 
+ * @copyright   Copyright (c) 2024
+ * 
+ */
 #ifndef __TGA_H__
 #define __TGA_H__
 
