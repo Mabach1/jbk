@@ -1,11 +1,11 @@
 /**
  * @file        jbk.h
- * @author      your name (you@domain.com)
- * @brief
- * @date        2023-11-16
- *
- * @copyright   Copyright (c) 2023
- *
+ * @author      Matej Baliga, FEI VSB-TUO, BAL0312 (matej.baliga.stv@vsb.cz)
+ * @brief       De/compression algorithm and handling of jbk files
+ * @date        2024-1-2
+ * 
+ * @copyright   Copyright (c) 2024
+ * 
  */
 #ifndef __JBK_H__
 #define __JBK_H__
@@ -33,10 +33,42 @@ typedef struct _JBK_File {
     JBK_Pixel *image;
 } JBK_File;
 
+/**
+ * @brief   Returns array of compressed pixels
+ * 
+ * @param   tga_file 
+ * @param   block_size 
+ * @param   max_compress_difference 
+ * @param   alen pointer to variable that will hold the number of compressed pixels
+ * @return  JBK_Pixel* 
+ */
 JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, int block_size, int max_compress_difference, uint32_t *alen);
+
+/**
+ * @brief   decompress jbk file into a tga file
+ * 
+ * @param   jbk_file 
+ * @return  TGA_File 
+ */
 TGA_File jbk_decompress_to_tga(JBK_File *jbk_file);
 
+/**
+ * @brief   save jbk file
+ * 
+ * @param   filename for jbk file
+ * @param   image compressed pixels
+ * @param   tga_file for information to save to
+ * @param   block_size 
+ * @param   len number of compressed pixels
+ */
 void jbk_save_file(const char *filename, JBK_Pixel *image, TGA_File *tga_file, uint16_t block_size, uint32_t len);
+
+/**
+ * @brief   loads jbk file into struct
+ * 
+ * @param   filename 
+ * @return  JBK_File 
+ */
 JBK_File jbk_load_file(const char *filename);
 
 #endif /* JBK_H */

@@ -34,9 +34,27 @@ typedef struct _TGA_File {
     Pixel *image;
 } TGA_File;
 
+/**
+ * @brief   open TGA file
+ * 
+ * @param   filename 
+ * @return  TGA_File 
+ */
 TGA_File tga_open_file(const char *filename);
+
+/**
+ * @brief   close TGA file, necessary to call after being done using TGA file
+ * 
+ * @param   file 
+ */
 void tga_close_file(TGA_File *file);
 
+/**
+ * @brief   save TGA file
+ * 
+ * @param   filename 
+ * @param   file 
+ */
 void tga_save_file(const char *filename, TGA_File *file);
 
 #endif /* TGA_H */

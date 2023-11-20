@@ -21,7 +21,7 @@ const char *jbk_get_error(JBK_Error err) {
         case INPUT_EXISTS:
             return "Input doesn't exists";
         case NO_OUTPUT:
-            return "Didn't provdide output path";
+            return "Didn't provide output path";
         case NO_MAX_DIFF:
             return "Didn't provide max difference";
         case WRONG_MAX_DIFF:
@@ -195,11 +195,11 @@ void jbk_info(void) {
     fprintf(stdout, "+ Author: Matej Baliga\n");
     fprintf(stdout, "+ Brief\n");
     fprintf(stdout, "  + Simple CLI application for compressing and decompressing of TGA files into format JBK.\n");
-    fprintf(stdout, "  + JBK is a custom format that works similiary to JPEG.\n");
+    fprintf(stdout, "  + JBK is a custom format that works similary to JPEG.\n");
     fprintf(stdout, "+ Usage\n");
     fprintf(stdout, "  + Compression\n");
     fprintf(stdout,
-            "  - ./jbk compress --input [path to TGA file] --output [path to JBK file] --max-diff [max difference of neighbouring piexls] "
+            "  - ./jbk compress --input [path to TGA file] --output [path to JBK file] --max-diff [max difference of neighboring pixels] "
             "--block-size [block size]\n");
     fprintf(stdout, "  + Decompression\n");
     fprintf(stdout, "  - ./jbk decompress --input [path to JBK file] --output [path to TGA file]\n");

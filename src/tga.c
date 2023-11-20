@@ -16,7 +16,7 @@ TGA_File tga_open_file(const char *filename) {
     FILE *file_ptr = fopen(filename, "rb");
 
     if (!file_ptr) {
-        fprintf(stderr, "\033[31m+ JBK Error:\033[0m Coudn't open [%s] for compression!\n+ Aborting with 1!\n", filename);
+        fprintf(stderr, "\033[31m+ JBK Error:\033[0m Couldn't open [%s] for compression!\n+ Aborting with 1!\n", filename);
         exit(EXIT_FAILURE);
     }
 
@@ -34,7 +34,7 @@ void tga_save_file(const char *filename, TGA_File *file) {
     FILE *file_ptr = fopen(filename, "wb");
 
     if (!file_ptr) {
-        fprintf(stderr, "\033[31m+ JBK Error:\033[0m Coudn't save file [%s]!\n+ Aborting with 1!\n", filename);
+        fprintf(stderr, "\033[31m+ JBK Error:\033[0m Couldn't save file [%s]!\n+ Aborting with 1!\n", filename);
         exit(EXIT_FAILURE);
     }
 

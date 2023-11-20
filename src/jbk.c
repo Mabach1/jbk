@@ -70,7 +70,7 @@ void jbk_save_file(const char *filename, JBK_Pixel *image, TGA_File *tga_file, u
     FILE *file_ptr = fopen(filename, "wb");
 
     if (!file_ptr) {
-        fprintf(stderr, "\033[31m+ JBK Error:\033[0m Coudn't open compressed file [%s]!\n+ Aborting with 1!\n", filename);
+        fprintf(stderr, "\033[31m+ JBK Error:\033[0m Couldn't open compressed file [%s]!\n+ Aborting with 1!\n", filename);
         exit(EXIT_FAILURE);
     }
 
@@ -88,7 +88,7 @@ JBK_File jbk_load_file(const char *filename) {
     FILE *file_ptr = fopen(filename, "rb");
 
     if (!file_ptr) {
-        fprintf(stderr, "\033[31m+ JBK Error:\033[0m Coudn't open compressed file [%s] for decompression!\n+ Aborting with 1!\n", filename);
+        fprintf(stderr, "\033[31m+ JBK Error:\033[0m Couldn't open compressed file [%s] for decompression!\n+ Aborting with 1!\n", filename);
         exit(EXIT_FAILURE);
     }
 
@@ -112,18 +112,18 @@ TGA_File jbk_decompress_to_tga(JBK_File *jbk_file) {
 
     res.header = jbk_file->tga_header;
     res.image = (Pixel *)malloc(sizeof(Pixel) * res.header.width * res.header.width);
-    assert(res.image && "Coudn't allocate memory for storing pixels!\n");
+    assert(res.image && "Couldn't allocate memory for storing pixels!\n");
 
     uint32_t width = res.header.width;
     uint32_t height = res.header.height;
-    uint16_t bloco_size = jbk_file->jbk_header.block_size;
+    uint16_t block_size = jbk_file->jbk_header.block_size;
 
     size_t index = 0;
 
-    for (uint32_t i = 0; i < height; i += bloco_size) {
-        for (uint32_t j = 0; j < width; j += bloco_size) {
-            for (uint32_t k = 0; k < bloco_size; ++k) {
-                for (uint32_t l = 0; l < bloco_size; ++l) {
+    for (uint32_t i = 0; i < height; i += block_size) {
+        for (uint32_t j = 0; j < width; j += block_size) {
+            for (uint32_t k = 0; k < block_size; ++k) {
+                for (uint32_t l = 0; l < block_size; ++l) {
                     if (jbk_file->image[index].len <= 0) {
                         ++index;
                     }
