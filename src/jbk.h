@@ -33,7 +33,7 @@ typedef struct _JBK_File {
     JBK_Pixel *image;
 } JBK_File;
 
-JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, uint16_t block_size, uint8_t max_compress_difference, uint32_t *alen);
+JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, int block_size, int max_compress_difference, uint32_t *alen);
 TGA_File jbk_decompress_to_tga(JBK_File *jbk_file);
 
 void jbk_save_file(const char *filename, JBK_Pixel *image, TGA_File *tga_file, uint16_t block_size, uint32_t len);

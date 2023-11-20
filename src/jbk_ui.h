@@ -9,7 +9,7 @@
 #include <assert.h>     
 #include <stdbool.h>    
 
-typedef enum { COMPRESS, DECOMPRESS } JBK_Action;
+typedef enum { COMPRESS, DECOMPRESS, INFO } JBK_Action;
 
 JBK_Action jbk_choose_action(const char *fst_arg);
 
@@ -22,8 +22,6 @@ typedef struct _CompressingArgs {
 
 CompressArgs compress_args_slurp(int argc, const char **argv);
 void compress_args_free(CompressArgs *args);
-void jbk_compress_show_info(CompressArgs *args);
-void jbk_compress_check_args(CompressArgs *args, TGA_File *tga);
 
 typedef struct _DecompressArgs {
     char *input;
@@ -32,6 +30,7 @@ typedef struct _DecompressArgs {
 
 DecompressArgs decompress_args_slurp(int argc, const char **argv);
 void decompress_args_free(DecompressArgs *args);
-void jbk_decompress_show_info(DecompressArgs *args);
+
+void jbk_show_info(JBK_Action action, CompressArgs *ca, DecompressArgs *da);
 
 #endif /* __JBK_USER_INTERFACE__ */

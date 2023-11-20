@@ -36,11 +36,6 @@ const char *jbk_get_error(JBK_Error err) {
     return NULL;
 }
 
-void jbk_error(JBK_Error err) {
-    fprintf(stderr, "+ JBK Error: %s!\n+ Aborting with value of 1!\n", jbk_get_error(err));
-    exit(EXIT_FAILURE);
-}
-
 JBK_Action jbk_choose_action(const char *fst_arg) {
     if (!strcmp(fst_arg, "compress")) {
         return COMPRESS;
@@ -50,13 +45,20 @@ JBK_Action jbk_choose_action(const char *fst_arg) {
         return DECOMPRESS;
     }
 
-    jbk_error(UNRECOGNIZED_ACTION);
+    if (!strcmp(fst_arg, "-info")) {
+        return INFO;
+    }
+
+    fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n+ Aborting with value of 1!\n", jbk_get_error(UNRECOGNIZED_ACTION));
+    exit(EXIT_FAILURE);
+
     return 0;
 }
 
 CompressArgs compress_args_slurp(int argc, const char **argv) {
     if (argc != 10) {
-        jbk_error(ARGC);
+        fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n+ Aborting with value of 1!\n", jbk_get_error(ARGC));
+        exit(EXIT_FAILURE);
     }
 
     CompressArgs res = {.input = NULL, .output = NULL, .max_diff = 0, .block_size = 0};
@@ -99,19 +101,19 @@ CompressArgs compress_args_slurp(int argc, const char **argv) {
         }
 
         if (!input_assigned) {
-            fprintf(stderr, "+ JBK Error: %s!\n", jbk_get_error(NO_INPUT));
+            fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n", jbk_get_error(NO_INPUT));
         }
 
         if (!output_assigned) {
-            fprintf(stderr, "+ JBK Error: %s!\n", jbk_get_error(NO_OUTPUT));
+            fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n", jbk_get_error(NO_OUTPUT));
         }
 
         if (!block_size_assigned) {
-            fprintf(stderr, "+ JBK Error: %s!\n", jbk_get_error(NO_BLOCK_SIZE));
+            fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n", jbk_get_error(NO_BLOCK_SIZE));
         }
 
         if (!max_diff_assigned) {
-            fprintf(stderr, "+ JBK Error: %s!\n", jbk_get_error(NO_MAX_DIFF));
+            fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n", jbk_get_error(NO_MAX_DIFF));
         }
 
         fprintf(stdout, "+ Aborting with value of 1!\n");
@@ -120,16 +122,6 @@ CompressArgs compress_args_slurp(int argc, const char **argv) {
     }
 
     return res;
-}
-
-void jbk_compress_check_args(CompressArgs *args, TGA_File *tga) {
-    if ((tga->header.width * tga->header.height) % args->block_size != 0 || args->block_size < 0) {
-        jbk_error(WRONG_BLOCK_SIZE);
-    }
-
-    if (args->max_diff < 0) {
-        jbk_error(WRONG_MAX_DIFF);
-    }
 }
 
 void compress_args_free(CompressArgs *args) {
@@ -195,4 +187,27 @@ void jbk_decompress_show_info(DecompressArgs *args) {
     fprintf(stdout, "+ Decompression summary:\n");
     fprintf(stdout, "  + input - %s\n", args->input);
     fprintf(stdout, "  + output - %s\n", args->output);
+}
+
+void jbk_info(void) {
+    fprintf(stdout, "JBK de/compression for TGA files!\n");
+    fprintf(stdout, "---------------------------------\n");
+    fprintf(stdout, "+ Author: Matej Baliga\n");
+    fprintf(stdout, "+ Brief\n");
+    fprintf(stdout, "  + Simple CLI application for compressing and decompressing of TGA files into format JBK.\n");
+    fprintf(stdout, "  + JBK is a custom format that works similiary to JPEG.\n");
+    fprintf(stdout, "+ Usage\n");
+    fprintf(stdout, "  + Compression\n");
+    fprintf(stdout, "  - ./jbk compress --input [path to TGA file] --output [path to JBK file] --max-diff [max difference of neighbouring piexls] --block-size [block size]\n");
+    fprintf(stdout, "  + Decompression\n");
+    fprintf(stdout, "  - ./jbk decompress --input [path to JBK file] --output [path to TGA file]\n");
+
+}
+
+void jbk_show_info(JBK_Action action, CompressArgs *ca, DecompressArgs *da) {
+    switch (action) {
+        case COMPRESS: jbk_compress_show_info(ca); return;
+        case DECOMPRESS: jbk_decompress_show_info(da); return;
+        case INFO: jbk_info(); return;
+    }
 }

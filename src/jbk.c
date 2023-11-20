@@ -6,7 +6,17 @@ int pixel_diff(Pixel p1, Pixel p2) {
     return (abs(p1.blue - p2.blue) + (abs(p1.green - p2.green)) + (abs(p1.red - p2.red)));
 }
 
-JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, uint16_t block_size, uint8_t max_compress_difference, uint32_t *alen) {
+JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, int block_size, int max_compress_difference, uint32_t *alen) {
+    if (block_size < 0 || (tga_file->header.width * tga_file->header.height) % block_size != 0) {
+        fprintf(stderr, "\033[31m+ JBK Error:\033[0m Invalid value (%d) of block size!\n+ Aborting with 1!\n", block_size);
+        exit(EXIT_FAILURE);
+    }
+
+    if (max_compress_difference < 0) {
+        fprintf(stderr, "\033[31m+ JBK Error:\033[0m Invalid value (%d) of max difference!\n+ Aborting with 1!\n", max_compress_difference);
+        exit(EXIT_FAILURE);
+    }
+
     Pixel *buf = tga_file->image;
 
     uint32_t height = tga_file->header.height;
@@ -21,8 +31,8 @@ JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, uint16_t block_size, uint8_t max
         for (uint32_t j = 0; j < width; j += block_size) {
             res[index].pixel = buf[BLOCK_POS(i, j, 0, 0, width)];
             res[index].len = 1;
-            for (uint32_t k = 0; k < block_size; ++k) {
-                for (uint32_t l = 0; l < block_size; ++l) {
+            for (uint32_t k = 0; k < (uint32_t)block_size; ++k) {
+                for (uint32_t l = 0; l < (uint32_t)block_size; ++l) {
                     size_t pos = BLOCK_POS(i, j, k, l, width);
 
                     // this is the first pixel we set few lines earlier
@@ -60,7 +70,11 @@ JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, uint16_t block_size, uint8_t max
 
 void jbk_save_file(const char *filename, JBK_Pixel *image, TGA_File *tga_file, uint16_t block_size, uint32_t len) {
     FILE *file_ptr = fopen(filename, "wb");
-    assert(file_ptr && "Coudn't open file to save compress tga file into!\n");
+
+    if (!file_ptr) {
+        fprintf(stderr, "\033[31m+ JBK Error:\033[0m Coudn't open compressed file [%s]!\n+ Aborting with 1!\n", filename);
+        exit(EXIT_FAILURE);
+    }
 
     assert(fwrite(&tga_file->header, sizeof(TGA_Header), 1, file_ptr) == 1);
     assert(fwrite(&block_size, sizeof(uint16_t), 1, file_ptr) == 1);
@@ -74,7 +88,11 @@ void jbk_save_file(const char *filename, JBK_Pixel *image, TGA_File *tga_file, u
 
 JBK_File jbk_load_file(const char *filename) {
     FILE *file_ptr = fopen(filename, "rb");
-    assert(file_ptr && "Coudn't open JBK file for decompression!\n");
+
+    if (!file_ptr) {
+        fprintf(stderr, "\033[31m+ JBK Error:\033[0m Coudn't open compressed file [%s] for decompression!\n+ Aborting with 1!\n", filename);
+        exit(EXIT_FAILURE);
+    }
 
     JBK_File res = {0};
 

@@ -14,8 +14,12 @@ Pixel *tga_load_image(TGA_Header *header, FILE *file_ptr) {
 
 TGA_File tga_open_file(const char *filename) {
     FILE *file_ptr = fopen(filename, "rb");
-    assert(file_ptr && "Coudn't open file");
-
+    
+    if (!file_ptr) {
+        fprintf(stderr, "\033[31m+ JBK Error:\033[0m Coudn't open [%s] for compression!\n+ Aborting with 1!\n", filename);
+        exit(EXIT_FAILURE);
+    }
+    
     TGA_File file = {0};
 
     file.header = tga_load_header(file_ptr);
@@ -28,7 +32,11 @@ TGA_File tga_open_file(const char *filename) {
 
 void tga_save_file(const char *filename, TGA_File *file) {
     FILE *file_ptr = fopen(filename, "wb");
-    assert(file_ptr && "Coudn't open TGA file to save it!\n");
+
+    if (!file_ptr) {
+        fprintf(stderr, "\033[31m+ JBK Error:\033[0m Coudn't save file [%s]!\n+ Aborting with 1!\n", filename);
+        exit(EXIT_FAILURE);
+    }
 
     fwrite(&file->header, sizeof(TGA_Header), 1, file_ptr);
     fwrite(file->image, sizeof(Pixel) * file->header.width * file->header.height, 1, file_ptr);
@@ -36,4 +44,4 @@ void tga_save_file(const char *filename, TGA_File *file) {
     fclose(file_ptr);
 }
 
-void tga_free(TGA_File *file) { free(file->image); }
+void tga_close_file(TGA_File *file) { free(file->image); }
