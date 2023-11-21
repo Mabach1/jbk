@@ -131,7 +131,8 @@ void compress_args_free(CompressArgs *args) {
 
 DecompressArgs decompress_args_slurp(int argc, const char **argv) {
     if (argc != 6) {
-        assert(0 && "Did not provide correct amount of arguments");
+        fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n+ Aborting with value of 1!\n", jbk_get_error(ARGC));
+        exit(EXIT_FAILURE);
     }
 
     DecompressArgs res = {.input = NULL, .output = NULL};
@@ -160,7 +161,18 @@ DecompressArgs decompress_args_slurp(int argc, const char **argv) {
         if (res.output) {
             free(res.output);
         }
-        assert(0 && "Didn't provide all arguments!\n");
+
+        if (!input_assigned) {
+            fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n", jbk_get_error(NO_INPUT));
+        }
+
+        if (!output_assigned) {
+            fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n", jbk_get_error(NO_OUTPUT));
+        }
+
+        fprintf(stdout, "+ Aborting with value of 1!\n");
+
+        exit(EXIT_FAILURE);
     }
 
     return res;
