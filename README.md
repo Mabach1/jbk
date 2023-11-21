@@ -13,7 +13,7 @@ $ make
 ```
 $ ./bin/jbk compress --max-diff 2 --input example.tga --output out.jbk --block-size 4
 ```
-Here in this example we compressing file `example.tga` into a compressed file `out.jbk.` We're compressing with maximum pixel difference of `2` and we're checking pixel values on scale of block `4x4`.
+Here in this example we're compressing file `example.tga` into a compressed file `out.jbk.` We're compressing with maximum pixel difference of `2` and we're checking pixel values on scale of block `4x4`.
 ### Decompression
 ```
 $ ./bin/jbk decompress --input out.jbk --output decompressed.tga
