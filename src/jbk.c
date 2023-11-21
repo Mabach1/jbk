@@ -40,7 +40,8 @@ JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, int block_size, int max_compress
 
                     if (255 == res[index].len) {
                         index += 1;
-                        res[index].pixel = buf[pos];
+                        // res[index].pixel = buf[pos];
+                        res[index].pixel = res[index-1].pixel;
                         res[index].len = 1;
                         continue;
                     }
