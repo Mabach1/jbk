@@ -4,11 +4,11 @@ This is a repository for JBK, my semestrial project for Introduction To Programm
 ## JBK
 JBK is simple CLI application for compressing and decompressing of TGA files. 
 
-## Usage
-### Build
+## Build
 ```
 $ make
 ```
+## Usage
 ### Compression
 ```
 $ ./bin/jbk compress --max-diff 2 --input example.tga --output out.jbk --block-size 4
