@@ -66,7 +66,24 @@ JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, int block_size, int max_compress
     return res;
 }
 
+int is_jbk_file(const char *filename) {
+    const char *extension = ".jbk";
+
+    for (int i = strlen(filename) - 1, j = 3; i >= (int)strlen(filename) - 4; --i) {
+        if (extension[j--] != filename[i]) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
 void jbk_save_file(const char *filename, JBK_Pixel *image, TGA_File *tga_file, uint16_t block_size, uint32_t len) {
+    if (!is_jbk_file(filename)) {
+        fprintf(stderr, "\033[31m+ JBK Error:\033[0m File [%s] is not a jbk file!\n+ Aborting with 1!\n", filename);
+        exit(EXIT_FAILURE);
+    }
+
     FILE *file_ptr = fopen(filename, "wb");
 
     if (!file_ptr) {
@@ -99,7 +116,6 @@ JBK_File jbk_open_file(const char *filename) {
     assert(fread(&res.jbk_header.size, sizeof(uint32_t), 1, file_ptr) == 1);
 
     res.image = (JBK_Pixel *)malloc(sizeof(JBK_Pixel) * res.jbk_header.size);
-
     assert(fread(res.image, sizeof(JBK_Pixel), res.jbk_header.size, file_ptr) == res.jbk_header.size);
 
     fclose(file_ptr);
@@ -137,8 +153,6 @@ TGA_File jbk_decompress_to_tga(JBK_File *jbk_file) {
             }
         }
     }
-
-    free(jbk_file->image);
 
     return res;
 }

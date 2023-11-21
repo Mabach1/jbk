@@ -12,7 +12,24 @@ Pixel *tga_load_image(TGA_Header *header, FILE *file_ptr) {
     return pixels;
 }
 
+int is_tga_file(const char *filename) {
+    const char *extension = ".tga";
+
+    for (int i = strlen(filename) - 1, j = 3; i >= (int)strlen(filename) - 4; --i) {
+        if (extension[j--] != filename[i]) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
 TGA_File tga_open_file(const char *filename) {
+    if (!is_tga_file(filename)) {
+        fprintf(stderr, "\033[31m+ JBK Error:\033[0m File [%s] is not a TGA file!\n+ Aborting with 1!\n", filename);
+        exit(EXIT_FAILURE);
+    }
+
     FILE *file_ptr = fopen(filename, "rb");
 
     if (!file_ptr) {

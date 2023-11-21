@@ -29,6 +29,7 @@ int main(int argc, const char **argv) {
         compress(&args);
         jbk_show_info(action, &args, NULL);
         compress_args_free(&args);
+        return 0;
     }
 
     if (DECOMPRESS == action) {
@@ -36,7 +37,10 @@ int main(int argc, const char **argv) {
         decompress(&args);
         jbk_show_info(action, NULL, &args);
         decompress_args_free(&args);
+        return 0;
     }
+
+    jbk_show_info(action, NULL, NULL);
 
     return 0;
 }
