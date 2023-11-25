@@ -8,12 +8,17 @@ JBK is simple CLI application for de/compressing `TGA` files from/into jbk forma
 ```
 $ ./build.sh
 ```
+or like this
+```
+$ ./build.sh COMPRESS_OVER_U8_MAX
+```
+for more details read the `Attention` paragraph.
 ## Usage
 ### Compression
 ```
 $ ./bin/jbk compress --max-diff 2 --input example.tga --output out.jbk --block-size 4
 ```
-Here in this example we're compressing file `example.tga` into a compressed file `out.jbk.` We're compressing with maximum pixel difference of `2` and we're checking pixel values on scale of block `4x4`.
+Here in this example we're compressing `example.tga` file into a compressed `out.jbk.` file. We're compressing with maximum pixel difference of `2` and checking pixel values on scale of block `4x4`. It is important to bear in mind the block size. Both the height and width must be dividable by the block size otherwise the file will not be compressed! But don't worry, if you don't want to calculate divisibility by your self, the application will do it for you.
 ### Decompression
 ```
 $ ./bin/jbk decompress --input out.jbk --output decompressed.tga
@@ -21,10 +26,7 @@ $ ./bin/jbk decompress --input out.jbk --output decompressed.tga
 In this example we're decompressing file `out.jbk`, back into a TGA file `decompressed.tga`
 
 ## Attention
-There are two different possible implementation of JBK algorithm. You can see the difference your self by building the application with the `COMPRESS_OVER_U8_MAX` like this:
-```
-./build.sh COMPRESS_OVER_U8_MAX
-```
+There are two different possible implementation of JBK algorithm. You can see the difference your self by building the application with the `COMPRESS_OVER_U8_MAX`.
 
 ## Resources
 * Introduction To Programming Scripts: https://mrlvsb.github.io/upr-skripta/c/aplikovane_ulohy/tga.html?highlight=tga#tga
