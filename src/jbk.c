@@ -5,7 +5,7 @@
 int pixel_diff(Pixel p1, Pixel p2) { return (abs(p1.blue - p2.blue) + (abs(p1.green - p2.green)) + (abs(p1.red - p2.red))); }
 
 JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, int block_size, int max_compress_difference, uint32_t *alen) {
-    if (block_size < 0 || (tga_file->header.width * tga_file->header.height) % block_size != 0) {
+    if (block_size < 0 || (tga_file->header.width % block_size != 0) || (tga_file->header.height % block_size != 0)) {
         fprintf(stderr, "\033[31m+ JBK Error:\033[0m Invalid value (%d) of block size!\n+ Aborting with 1!\n", block_size);
         exit(EXIT_FAILURE);
     }
@@ -17,20 +17,20 @@ JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, int block_size, int max_compress
 
     Pixel *buf = tga_file->image;
 
-    uint32_t height = tga_file->header.height;
-    uint32_t width = tga_file->header.width;
+    uint16_t height = tga_file->header.height;
+    uint16_t width = tga_file->header.width;
 
     JBK_Pixel *res = (JBK_Pixel *)malloc(sizeof(JBK_Pixel) * height * width);
     assert(res && "Allocation of compressed pixels failed!\n");
 
     uint32_t index = 0;
 
-    for (uint32_t i = 0; i < height; i += block_size) {
-        for (uint32_t j = 0; j < width; j += block_size) {
+    for (uint16_t i = 0; i < height; i += block_size) {
+        for (uint16_t j = 0; j < width; j += block_size) {
             res[index].pixel = buf[BLOCK_POS(i, j, 0, 0, width)];
             res[index].len = 1;
-            for (uint32_t k = 0; k < (uint32_t)block_size; ++k) {
-                for (uint32_t l = 0; l < (uint32_t)block_size; ++l) {
+            for (uint16_t k = 0; k < (uint16_t)block_size; ++k) {
+                for (uint16_t l = 0; l < (uint16_t)block_size; ++l) {
                     size_t pos = BLOCK_POS(i, j, k, l, width);
 
                     // this is the first pixel we set few lines earlier
@@ -40,8 +40,11 @@ JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, int block_size, int max_compress
 
                     if (255 == res[index].len) {
                         index += 1;
-                        // res[index].pixel = buf[pos];
-                        res[index].pixel = res[index-1].pixel;
+#ifdef COMPRESS_OVER_U8_MAX
+                        res[index].pixel = res[index - 1].pixel;
+#else
+                        res[index].pixel = buf[pos];
+#endif
                         res[index].len = 1;
                         continue;
                     }
@@ -124,9 +127,7 @@ JBK_File jbk_open_file(const char *filename) {
     return res;
 }
 
-void jbk_close_file(JBK_File *file) {
-    free(file->image);
-}
+void jbk_close_file(JBK_File *file) { free(file->image); }
 
 TGA_File jbk_decompress_to_tga(JBK_File *jbk_file) {
     TGA_File res = {0};
