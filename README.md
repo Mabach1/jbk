@@ -6,7 +6,7 @@ JBK is simple CLI application for de/compressing TGA files from/into jbk format.
 
 ## Build
 ```
-$ make
+$ ./build.sh
 ```
 ## Usage
 ### Compression
@@ -19,6 +19,12 @@ Here in this example we're compressing file `example.tga` into a compressed file
 $ ./bin/jbk decompress --input out.jbk --output decompressed.tga
 ```
 In this example we're decompressing file `out.jbk`, back into a TGA file `decompressed.tga`
+
+## Attention
+There are two different possible implementation of JBK algorithm. You can see the difference your self by building the application with the `COMPRESS_OVER_U8_MAX` like this:
+```
+./build.sh COMPRESS_OVER_U8_MAX
+```
 
 ## Resources
 * Introduction To Programming Scripts: https://mrlvsb.github.io/upr-skripta/c/aplikovane_ulohy/tga.html?highlight=tga#tga
