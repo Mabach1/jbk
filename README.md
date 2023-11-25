@@ -1,8 +1,8 @@
-# JBK - de/compression of TGA files
+# JBK - compression of TGA files
 This is a repository for JBK, my semester project for Introduction To Programming course at VSB-TUO.
 
 ## JBK
-JBK is simple CLI application for de/compressing TGA files from/into jbk format. 
+JBK is simple CLI application for de/compressing `TGA` files from/into jbk format. 
 
 ## Build
 ```
