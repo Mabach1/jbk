@@ -29,9 +29,9 @@ In this example we're decompressing file `out.jbk`, back into a TGA file `decomp
 There are two different possible implementation of JBK algorithm. You can see the difference your self by building the application with the `COMPRESS_OVER_U8_MAX`.
 
 ## Resources
-* Introduction To Programming Scripts: https://mrlvsb.github.io/upr-skripta/c/aplikovane_ulohy/tga.html?highlight=tga#tga
-* TGA File Format Specification: https://www.dca.fee.unicamp.br/~martino/disciplinas/ea978/tgaffs.pdf
-* Creating TGA Image files (Paul Bourke, 1996): http://www.paulbourke.net/dataformats/tga/
+* [Introduction To Programming Scripts](https://mrlvsb.github.io/upr-skripta/c/aplikovane_ulohy/tga.html?highlight=tga#tga)
+* [TGA File Format Specification](https://www.dca.fee.unicamp.br/~martino/disciplinas/ea978/tgaffs.pdf)
+* [Creating TGA Image files (Paul Bourke, 1996)](http://www.paulbourke.net/dataformats/tga/)
 * Data padding:
-  * Structure Member Alignment, Padding, and Data Packing: https://www.geeksforgeeks.org/structure-member-alignment-padding-and-data-packing/
-  * GCC Structure Packing Pragmas: https://gcc.gnu.org/onlinedocs/gcc-4.9.3/gcc/Structure-Packing-Pragmas.html#Structure-Packing-Pragmas
+  * [Structure Member Alignment, Padding, and Data Packing](https://www.geeksforgeeks.org/structure-member-alignment-padding-and-data-packing/)
+  * [GCC Structure Packing Pragmas](https://gcc.gnu.org/onlinedocs/gcc-4.9.3/gcc/Structure-Packing-Pragmas.html#Structure-Packing-Pragmas)
