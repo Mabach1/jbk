@@ -25,6 +25,15 @@ $ ./bin/jbk decompress --input out.jbk --output decompressed.tga
 ```
 In this example we're decompressing file `out.jbk`, back into a TGA file `decompressed.tga`
 
+## Examples
+compression examples
+
+Original image 
+![original image](./examples/images/flowers.png)
+
+image compressed with value of maximum difference 70 and block size 16
+![compressed image](./examples/compressed/flower-compressed.png)
+
 ## Attention
 There are two different possible implementation of JBK algorithm. You can see the difference your self by building the application with the `COMPRESS_OVER_U8_MAX`. <br>
 

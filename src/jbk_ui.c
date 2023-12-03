@@ -37,6 +37,11 @@ const char *jbk_get_error(JBK_Error err) {
 }
 
 JBK_Action jbk_choose_action(const char *fst_arg) {
+    if (!fst_arg) {
+        fprintf(stderr, "\033[31m+ jbk error:\033[0m No arguments provided!\n+ aborting with value of 1!\n");
+        exit(EXIT_FAILURE);
+    }
+
     if (!strcmp(fst_arg, "compress")) {
         return COMPRESS;
     }
