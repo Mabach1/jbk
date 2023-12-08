@@ -19,7 +19,8 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 .PHONY: clean
 clean:
 	@echo "+ Cleaning..."
-	@rm -f $(OBJS)
+	@rm $(OBJS) -f
+	@rm $(BUILD_DIR)/jbk -f
 
 .PHONY: all
 all: $(BUILD_DIR)/jbk

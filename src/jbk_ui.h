@@ -25,6 +25,7 @@ typedef struct _CompressingArgs {
     char *output;
     int block_size;
     int max_diff;
+    bool compress_flag;
 } CompressArgs;
 
 typedef struct _DecompressArgs {

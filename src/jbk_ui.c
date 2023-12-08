@@ -61,19 +61,27 @@ JBK_Action jbk_choose_action(const char *fst_arg) {
 }
 
 CompressArgs compress_args_slurp(int argc, const char **argv) {
-    if (argc != 10) {
+    if (argc != 10 && argc != 12) {
         fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n+ Aborting with value of 1!\n", jbk_get_error(ARGC));
         exit(EXIT_FAILURE);
     }
 
-    CompressArgs res = {.input = NULL, .output = NULL, .max_diff = 0, .block_size = 0};
+    CompressArgs res = {.input = NULL, .output = NULL, .max_diff = 0, .block_size = 0, .compress_flag = false};
 
     bool input_assigned = false;
     bool output_assigned = false;
     bool block_size_assigned = false;
     bool max_diff_assigned = false;
+    bool compress_flag_assigned = false;
 
-    for (int i = 2; i < argc - 1; ++i) {
+    for (int i = 1; i < argc; ++i) {
+        if (strcmp(argv[i], "--COMPRESS_OVER_U8_MAX") == 0 && !compress_flag_assigned) {
+            if (strcmp(argv[i + 1], "true") == 0) {
+                res.compress_flag = true;
+            }
+            compress_flag_assigned = true;        
+        }
+
         if (strcmp(argv[i], "--input") == 0 && !input_assigned) {
             res.input = (char *)malloc(strlen(argv[i + 1]) + 1);
             strcpy(res.input, argv[i + 1]);
@@ -93,6 +101,7 @@ CompressArgs compress_args_slurp(int argc, const char **argv) {
 
         if (strcmp(argv[i], "--max-diff") == 0 && !max_diff_assigned) {
             res.max_diff = atoi(argv[i + 1]);
+            printf("%s = %d\n", argv[i + 1], atoi(argv[i + 1]));
             max_diff_assigned = true;
         }
     }
@@ -118,6 +127,10 @@ CompressArgs compress_args_slurp(int argc, const char **argv) {
         }
 
         if (!max_diff_assigned) {
+            fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n", jbk_get_error(NO_MAX_DIFF));
+        }
+
+        if (!compress_flag_assigned) {
             fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n", jbk_get_error(NO_MAX_DIFF));
         }
 
@@ -196,6 +209,7 @@ void jbk_compress_show_info(CompressArgs *args) {
     fprintf(stdout, "  + output - %s\n", args->output);
     fprintf(stdout, "  + block size - %d\n", args->block_size);
     fprintf(stdout, "  + max pixel diff - %d\n", args->max_diff);
+    fprintf(stdout, "  + compressing over u8 max - %s\n", args->compress_flag ? "true" : "false");
 }
 
 void jbk_decompress_show_info(DecompressArgs *args) {
@@ -207,8 +221,9 @@ void jbk_decompress_show_info(DecompressArgs *args) {
 }
 
 void jbk_info(void) {
-    fprintf(stdout, "JBK de/compression for TGA files!\n");
-    fprintf(stdout, "---------------------------------\n");
+    fprintf(stdout, "----------------------------------\n");
+    fprintf(stdout, "JBK - de/compression of TGA files!\n");
+    fprintf(stdout, "----------------------------------\n");
     fprintf(stdout, "+ Author: Matej Baliga\n");
     fprintf(stdout, "+ Brief\n");
     fprintf(stdout, "  + Simple CLI application for compressing and decompressing of TGA files into format JBK.\n");
@@ -216,8 +231,12 @@ void jbk_info(void) {
     fprintf(stdout, "+ Usage\n");
     fprintf(stdout, "  + Compression\n");
     fprintf(stdout,
-            "  - ./jbk compress --input [path to TGA file] --output [path to JBK file] --max-diff [max difference of neighboring pixels] "
-            "--block-size [block size]\n");
+            "  - ./jbk compress\n"
+            "\t--input [path to TGA file]\n" 
+            "\t--output [path to JBK file]\n" 
+            "\t--max-diff [max difference of neighboring pixels]\n"
+            "\t--block-size [block size]\n"
+            "\t--COMPRESS_OVER_U8_MAX true (optional)\n");
     fprintf(stdout, "  + Decompression\n");
     fprintf(stdout, "  - ./jbk decompress --input [path to JBK file] --output [path to TGA file]\n");
 }

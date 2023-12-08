@@ -14,6 +14,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "tga.h"
 
@@ -40,9 +41,10 @@ typedef struct _JBK_File {
  * @param   block_size
  * @param   max_compress_difference
  * @param   alen pointer to variable that will hold the number of compressed pixels
+ * @param   compress_flag whether or not we'll be compressing over maximum value of uin8_t (default value: false)
  * @return  JBK_Pixel*
  */
-JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, int block_size, int max_compress_difference, uint32_t *alen);
+JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, int block_size, int max_compress_difference, uint32_t *alen, bool compress_flag);
 
 /**
  * @brief   decompress jbk file into a tga file

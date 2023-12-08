@@ -4,7 +4,7 @@
 
 int pixel_diff(Pixel p1, Pixel p2) { return (abs(p1.blue - p2.blue) + (abs(p1.green - p2.green)) + (abs(p1.red - p2.red))); }
 
-JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, int block_size, int max_compress_difference, uint32_t *alen) {
+JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, int block_size, int max_compress_difference, uint32_t *alen, bool compress_flag) {
     if (block_size <= 1 || (tga_file->header.width % block_size != 0) || (tga_file->header.height % block_size != 0)) {
         fprintf(stderr, "\033[31m+ JBK Error:\033[0m Invalid value (%d) of block size!\n+ Aborting with 1!\n", block_size);
         exit(EXIT_FAILURE);
@@ -38,13 +38,15 @@ JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, int block_size, int max_compress
                         continue;
                     }
 
-                    if (255 == res[index].len) {
+                    if (UINT8_MAX == res[index].len) {
                         index += 1;
-#ifdef COMPRESS_OVER_U8_MAX
-                        res[index].pixel = res[index - 1].pixel;
-#else
-                        res[index].pixel = buf[pos];
-#endif
+
+                        if (compress_flag) {
+                            res[index].pixel = res[index - 1].pixel;
+                        } else {
+                            res[index].pixel = buf[pos];
+                        }
+
                         res[index].len = 1;
                         continue;
                     }
@@ -73,7 +75,7 @@ JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, int block_size, int max_compress
 int is_jbk_file(const char *filename) {
     const char *extension = ".jbk";
 
-    for (int i = strlen(filename) - 1, j = 3; i >= (int)strlen(filename) - 4; --i) {
+    for (int i = strlen(filename) - 1, j = strlen(extension) - 1; i >= (int)strlen(filename) - 4; --i) {
         if (extension[j--] != filename[i]) {
             return 0;
         }
