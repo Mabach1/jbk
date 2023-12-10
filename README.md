@@ -6,19 +6,21 @@ JBK is simple CLI application for de/compressing `TGA` files from/into jbk forma
 
 ## Build
 ```
-$ ./build.sh
+$ make
 ```
-or like this
-```
-$ ./build.sh COMPRESS_OVER_U8_MAX
-```
-for more details read the `Attention` paragraph.
 ## Usage
 ### Compression
 ```
 $ ./bin/jbk compress --max-diff 2 --input example.tga --output out.jbk --block-size 4
 ```
+or
+```
+$ ./bin/jbk compress --max-diff 2 --input example.tga --output out.jbk --block-size 4 --COMPRESS_OVER_U8_MAX true
+```
+For more information about the `COMPRESS_OVER_U8_MAX` flag read the respective paragraph <br>
+
 Here in this example we're compressing `example.tga` file into a compressed `out.jbk.` file. We're compressing with maximum pixel difference of `2` and checking pixel values on scale of block `4x4`. It is important to bear in mind the block size. Both the height and width must be dividable by the block size otherwise the file will not be compressed! But don't worry, if you don't want to calculate divisibility by your self, the application will do it for you.
+
 ### Decompression
 ```
 $ ./bin/jbk decompress --input out.jbk --output decompressed.tga
@@ -34,10 +36,15 @@ Original image
 image compressed with value of maximum difference 70 and block size 16
 ![compressed image](./examples/compressed/flower-compressed.png)
 
-## Attention
+## COMPRESS_OVER_U8_MAX
 There are two different possible implementation of JBK algorithm. You can see the difference your self by building the application with the `COMPRESS_OVER_U8_MAX`. <br>
 
-The difference is in the 'length' calculation. When we're compressing we take a pixel and compare it with the one next to it. If they're similiar, we increase the 'length' of the first pixel and compare it to the next one in the sequence. The issue arise when we reach length of 255, since this is the maximum of 8-bit integer which we use to store the length. In the first version of program, when we exceed the value of 255 the next pixel is the current one that was being compared, with the `COMPRESS_OVER_U8_MAX` the next pixel is the same as the original one.
+The difference is in the 'length' calculation. When we're compressing we take a pixel and compare it with the one next to it. If they're similar, we increase the 'length' of the first pixel and compare it to the next one in the sequence. The issue arise when we reach length of 255, since this is the maximum of 8-bit integer which we use to store the length. In the first version of implementation, when we exceed the value of 255 the next pixel is the current one that was being compared, with the `COMPRESS_OVER_U8_MAX` flag the next pixel is the same as the original one. 
+
+#### Without the `COMPRESS_OVER_U8_MAX` flag
+![without flag](./examples/images/carmack_compressed_without_flag.tga)
+#### With the `COMPRESS_OVER_U8_MAX` flag
+![with flag](./examples/images/carmack_compressed_with_flag.tga)
 
 ## Resources
 * [Introduction To Programming Scripts](https://mrlvsb.github.io/upr-skripta/c/aplikovane_ulohy/tga.html?highlight=tga#tga)
