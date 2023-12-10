@@ -42,9 +42,9 @@ There are two different possible implementation of JBK algorithm. You can see th
 The difference is in the 'length' calculation. When we're compressing we take a pixel and compare it with the one next to it. If they're similar, we increase the 'length' of the first pixel and compare it to the next one in the sequence. The issue arise when we reach length of 255, since this is the maximum of 8-bit integer which we use to store the length. In the first version of implementation, when we exceed the value of 255 the next pixel is the current one that was being compared, with the `COMPRESS_OVER_U8_MAX` flag the next pixel is the same as the original one. 
 
 #### Without the `COMPRESS_OVER_U8_MAX` flag
-![without flag](./examples/images/carmack_compressed_without_flag.tga)
+![without flag](./examples/images/carmack_compressed_without_flag.png)
 #### With the `COMPRESS_OVER_U8_MAX` flag
-![with flag](./examples/images/carmack_compressed_with_flag.tga)
+![with flag](./examples/images/carmack_compressed_with_flag.png)
 
 ## Resources
 * [Introduction To Programming Scripts](https://mrlvsb.github.io/upr-skripta/c/aplikovane_ulohy/tga.html?highlight=tga#tga)
