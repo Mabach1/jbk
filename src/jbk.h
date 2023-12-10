@@ -25,7 +25,7 @@ typedef struct _JBK_Pixel {
 
 typedef struct _JBK_Header {
     uint16_t block_size;
-    uint32_t size;
+    uint32_t len;
 } JBK_Header;
 
 typedef struct _JBK_File {

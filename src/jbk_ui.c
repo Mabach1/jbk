@@ -101,7 +101,6 @@ CompressArgs compress_args_slurp(int argc, const char **argv) {
 
         if (strcmp(argv[i], "--max-diff") == 0 && !max_diff_assigned) {
             res.max_diff = atoi(argv[i + 1]);
-            printf("%s = %d\n", argv[i + 1], atoi(argv[i + 1]));
             max_diff_assigned = true;
         }
     }

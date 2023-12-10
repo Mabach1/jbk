@@ -25,10 +25,14 @@ JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, int block_size, int max_compress
 
     uint32_t index = 0;
 
+    // chopping the image array into blocks
     for (uint16_t i = 0; i < height; i += block_size) {
         for (uint16_t j = 0; j < width; j += block_size) {
+            // first pixel in the block
             res[index].pixel = buf[BLOCK_POS(i, j, 0, 0, width)];
             res[index].len = 1;
+
+            // compressing inside the blocks
             for (uint16_t k = 0; k < (uint16_t)block_size; ++k) {
                 for (uint16_t l = 0; l < (uint16_t)block_size; ++l) {
                     size_t pos = BLOCK_POS(i, j, k, l, width);
@@ -38,6 +42,7 @@ JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, int block_size, int max_compress
                         continue;
                     }
 
+                    // handling of integer overflow
                     if (UINT8_MAX == res[index].len) {
                         index += 1;
 
@@ -119,10 +124,10 @@ JBK_File jbk_open_file(const char *filename) {
 
     assert(fread(&res.tga_header, sizeof(TGA_Header), 1, file_ptr) == 1);
     assert(fread(&res.jbk_header, sizeof(uint16_t), 1, file_ptr) == 1);
-    assert(fread(&res.jbk_header.size, sizeof(uint32_t), 1, file_ptr) == 1);
+    assert(fread(&res.jbk_header.len, sizeof(uint32_t), 1, file_ptr) == 1);
 
-    res.image = (JBK_Pixel *)malloc(sizeof(JBK_Pixel) * res.jbk_header.size);
-    assert(fread(res.image, sizeof(JBK_Pixel), res.jbk_header.size, file_ptr) == res.jbk_header.size);
+    res.image = (JBK_Pixel *)malloc(sizeof(JBK_Pixel) * res.jbk_header.len);
+    assert(fread(res.image, sizeof(JBK_Pixel), res.jbk_header.len, file_ptr) == res.jbk_header.len);
 
     fclose(file_ptr);
 
