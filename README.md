@@ -34,7 +34,7 @@ Original image
 ![original image](./examples/images/flowers.png)
 
 image compressed with value of maximum difference 70 and block size 16
-![compressed image](./examples/compressed/flower-compressed.png)
+![compressed image](./examples/images/flower-compressed.png)
 
 ## COMPRESS_OVER_U8_MAX
 There are two different possible implementation of JBK algorithm. You can see the difference your self by building the application with the `COMPRESS_OVER_U8_MAX`. <br>
@@ -44,7 +44,7 @@ The difference is in the 'length' calculation. When we're compressing we take a 
 #### Without the `COMPRESS_OVER_U8_MAX` flag
 ![without flag](./examples/images/carmack_compressed_without_flag.png)
 #### With the `COMPRESS_OVER_U8_MAX` flag
-![with flag](./examples/images/carmack_compressed_with_flag.png)
+![with flag](./examples/images/carmack_with_flag.png)
 
 ## Resources
 * [Introduction To Programming Scripts](https://mrlvsb.github.io/upr-skripta/c/aplikovane_ulohy/tga.html?highlight=tga#tga)
