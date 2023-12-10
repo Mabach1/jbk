@@ -33,7 +33,10 @@ compression examples
 Original image 
 ![original image](./examples/images/flowers.png)
 
-image compressed with value of maximum difference 70 and block size 16
+image compressed with value of maximum difference 12 and block size 16 (approximately 49.2% of the original file size)
+![not noticeable compression](./examples/images/flowers_low_compression.png)
+
+image compressed with value of maximum difference 70 and block size 16 (approximately 7.9% of the original file size)
 ![compressed image](./examples/images/flower-compressed.png)
 
 ## COMPRESS_OVER_U8_MAX
