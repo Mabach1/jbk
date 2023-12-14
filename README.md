@@ -1,22 +1,42 @@
 # JBK - compression of TGA files
 This is a repository for JBK, my semester project for Introduction To Programming course at VSB-TUO.
 
+## Table of Contents
 
+- [JBK - compression of TGA files](#jbk---compression-of-tga-files)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [JBK](#jbk)
+  - [Build](#build)
+  - [Usage](#usage)
+    - [Compression](#compression)
+    - [Decompression](#decompression)
+  - [Examples](#examples)
+  - [COMPRESS\_OVER\_U8\_MAX](#compress_over_u8_max)
+      - [Without the `COMPRESS_OVER_U8_MAX` flag](#without-the-compress_over_u8_max-flag)
+      - [With the `COMPRESS_OVER_U8_MAX` flag](#with-the-compress_over_u8_max-flag)
+  - [Resources](#resources)
+
+## Introduction
+
+This repository houses JBK, a command-line interface application designed for de/compressing TGA files into/from JBK format. Developed as a semester project for the Introduction to Programming course at VSB-TUO.
 
 ## JBK
-JBK is simple CLI application for de/compressing `TGA` files from/into jbk format. 
+
+JBK is a simple CLI application that facilitates the compression and decompression of TGA files using the JBK format.
 
 ## Build
+To build the JBK application, use the following command:
 ```
 $ make
 ```
 ## Usage
 ### Compression
-```
+``` bash
 $ ./bin/jbk compress --max-diff 2 --input example.tga --output out.jbk --block-size 4
 ```
 or
-```
+``` bash
 $ ./bin/jbk compress --max-diff 2 --input example.tga --output out.jbk --block-size 4 --COMPRESS_OVER_U8_MAX true
 ```
 For more information about the `COMPRESS_OVER_U8_MAX` flag read the respective paragraph <br>
@@ -24,7 +44,7 @@ For more information about the `COMPRESS_OVER_U8_MAX` flag read the respective p
 Here in this example we're compressing `example.tga` file into a compressed `out.jbk.` file. We're compressing with maximum pixel difference of `2` and checking pixel values on scale of block `4x4`. It is important to bear in mind the block size. Both the height and width must be dividable by the block size otherwise the file will not be compressed! But don't worry, if you don't want to calculate divisibility by your self, the application will do it for you.
 
 ### Decompression
-```
+``` bash
 $ ./bin/jbk decompress --input out.jbk --output decompressed.tga
 ```
 In this example we're decompressing file `out.jbk`, back into a TGA file `decompressed.tga`
