@@ -1,5 +1,4 @@
 # JBK - compression of TGA files
-This is a repository for JBK, my semester project for Introduction To Programming course at VSB-TUO.
 
 ## Table of Contents
 
