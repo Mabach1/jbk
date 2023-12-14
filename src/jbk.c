@@ -4,7 +4,49 @@
 
 int pixel_diff(Pixel p1, Pixel p2) { return (abs(p1.blue - p2.blue) + (abs(p1.green - p2.green)) + (abs(p1.red - p2.red))); }
 
-JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, int block_size, int max_compress_difference, uint32_t *alen, bool compress_flag) {
+void compress_block(uint16_t block_starting_height, uint16_t block_starting_width, uint16_t width, uint16_t block_size, JBK_Pixel *res, Pixel *image_buf, uint32_t *index,
+                    int max_compress_difference, bool compress_flag) {
+    bool origin_checked = false;
+    int index_copy = *index;
+
+    for (uint16_t i = 0; i < block_size; ++i) {
+        for (uint16_t j = 0; j < block_size; ++j) {
+            size_t pos = BLOCK_POS(block_starting_height, block_starting_width, i, j, width);
+
+            if (!origin_checked && pos == (size_t)BLOCK_POS(block_starting_height, block_starting_width, 0, 0, width)) {
+                origin_checked = true;
+                continue;
+            }
+
+            // handling of integer overflow
+            if (UINT8_MAX == res[index_copy].len) {
+                index_copy += 1;
+
+                if (compress_flag) {
+                    res[index_copy].pixel = res[index_copy - 1].pixel;
+                } else {
+                    res[index_copy].pixel = image_buf[pos];
+                }
+
+                res[index_copy].len = 1;
+
+                continue;
+            }
+
+            if (pixel_diff(res[index_copy].pixel, image_buf[pos]) <= max_compress_difference) {
+                res[index_copy].len += 1;
+            } else {
+                index_copy += 1;
+                res[index_copy].pixel = image_buf[pos];
+                res[index_copy].len = 1;
+            }
+        }
+    }
+
+    *index = index_copy;
+}
+
+JBK_Pixel *jbk_compress_tga(TGA_File *restrict tga_file, int block_size, int max_compress_difference, uint32_t *alen, bool compress_flag) {
     if (block_size <= 1 || (tga_file->header.width % block_size != 0) || (tga_file->header.height % block_size != 0)) {
         fprintf(stderr, "\033[31m+ JBK Error:\033[0m Invalid value (%d) of block size!\n+ Aborting with 1!\n", block_size);
         exit(EXIT_FAILURE);
@@ -25,46 +67,14 @@ JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, int block_size, int max_compress
 
     uint32_t index = 0;
 
-    // chopping the image array into blocks
     for (uint16_t i = 0; i < height; i += block_size) {
         for (uint16_t j = 0; j < width; j += block_size) {
             // first pixel in the block
             res[index].pixel = buf[BLOCK_POS(i, j, 0, 0, width)];
             res[index].len = 1;
 
-            // compressing inside the blocks
-            for (uint16_t k = 0; k < (uint16_t)block_size; ++k) {
-                for (uint16_t l = 0; l < (uint16_t)block_size; ++l) {
-                    size_t pos = BLOCK_POS(i, j, k, l, width);
+            compress_block(i, j, width, block_size, res, buf, &index, max_compress_difference, compress_flag);
 
-                    // this is the first pixel we set few lines earlier
-                    if (pos == (size_t)BLOCK_POS(i, j, 0, 0, width)) {
-                        continue;
-                    }
-
-                    // handling of integer overflow
-                    if (UINT8_MAX == res[index].len) {
-                        index += 1;
-
-                        if (compress_flag) {
-                            res[index].pixel = res[index - 1].pixel;
-                        } else {
-                            res[index].pixel = buf[pos];
-                        }
-
-                        res[index].len = 1;
-                        continue;
-                    }
-
-                    if (pixel_diff(res[index].pixel, buf[pos]) <= max_compress_difference) {
-                        res[index].len += 1;
-                    } else {
-                        index += 1;
-                        res[index].pixel = buf[pos];
-                        res[index].len = 1;
-                    }
-                }
-            }
             index += 1;
         }
     }

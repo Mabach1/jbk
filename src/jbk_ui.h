@@ -79,8 +79,8 @@ JBK_Action jbk_choose_action(const char *fst_arg);
  * If we compressing, we will pass compression arguments into the function and the other argument will be NULL
  *
  * @param   action
- * @param   compression_args (NULL)
- * @param   decompression_args (NULL)
+ * @param   compression_args (can be optional, => NULL)
+ * @param   decompression_args (can be optional, => NULL)
  */
 void jbk_show_info(JBK_Action action, CompressArgs *compression_args, DecompressArgs *decompression_args);
 

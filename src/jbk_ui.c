@@ -10,9 +10,10 @@ typedef enum _JBK_Error {
     NO_BLOCK_SIZE,
     WRONG_BLOCK_SIZE,
     ARGC,
-} JBK_Error;
+    NO_COMPRESS_FLAG
+} JBK_ErrorMsg;
 
-const char *jbk_get_error(JBK_Error err) {
+const char *jbk_get_error(JBK_ErrorMsg err) {
     switch (err) {
         case UNRECOGNIZED_ACTION:
             return "Unrecognized action, can't proceed with (de)compression";
@@ -30,6 +31,8 @@ const char *jbk_get_error(JBK_Error err) {
             return "Invalid value of block size";
         case NO_BLOCK_SIZE:
             return "Didn't provide block size";
+        case NO_COMPRESS_FLAG:
+            return "Didn't provide appropriate compress flag";
         case ARGC:
             return "Didn't proved correct amount of arguments";
     }
@@ -130,7 +133,7 @@ CompressArgs compress_args_slurp(int argc, const char **argv) {
         }
 
         if (!compress_flag_assigned) {
-            fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n", jbk_get_error(NO_MAX_DIFF));
+            fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n", jbk_get_error(NO_COMPRESS_FLAG));
         }
 
         fprintf(stdout, "+ Aborting with value of 1!\n");
