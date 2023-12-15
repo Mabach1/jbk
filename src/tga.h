@@ -16,6 +16,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "jbk_ui.h"
+
 #pragma pack(push, 1)
 typedef struct _TGA_Header {
     uint8_t id_length;

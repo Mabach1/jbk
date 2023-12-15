@@ -26,15 +26,15 @@ int is_tga_file(const char *filename) {
 
 TGA_File tga_open_file(const char *filename) {
     if (!is_tga_file(filename)) {
-        fprintf(stderr, "\033[31m+ JBK Error:\033[0m File [%s] is not a TGA file!\n+ Aborting with 1!\n", filename);
-        exit(EXIT_FAILURE);
+        jbk_error("File [%s] is not a TGA file", filename);
+        jbk_exit();
     }
 
     FILE *file_ptr = fopen(filename, "rb");
 
     if (!file_ptr) {
-        fprintf(stderr, "\033[31m+ JBK Error:\033[0m Couldn't open [%s] for compression!\n+ Aborting with 1!\n", filename);
-        exit(EXIT_FAILURE);
+        jbk_error("Couldn't open [%s] for compression", filename);
+        jbk_exit();
     }
 
     TGA_File file = {0};
@@ -51,8 +51,8 @@ void tga_save_file(const char *filename, TGA_File *file) {
     FILE *file_ptr = fopen(filename, "wb");
 
     if (!file_ptr) {
-        fprintf(stderr, "\033[31m+ JBK Error:\033[0m Couldn't save file [%s]!\n+ Aborting with 1!\n", filename);
-        exit(EXIT_FAILURE);
+        jbk_error("Couldn't save file [%s]", filename);
+        jbk_exit();
     }
 
     fwrite(&file->header, sizeof(TGA_Header), 1, file_ptr);
@@ -61,4 +61,8 @@ void tga_save_file(const char *filename, TGA_File *file) {
     fclose(file_ptr);
 }
 
-void tga_close_file(TGA_File *file) { free(file->image); }
+void tga_close_file(TGA_File *file) { 
+    if (file->image) {
+        free(file->image); 
+    }
+}

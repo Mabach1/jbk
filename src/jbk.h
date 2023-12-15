@@ -17,6 +17,7 @@
 #include <stdlib.h>
 
 #include "tga.h"
+#include "jbk_ui.h"
 
 typedef struct _JBK_Pixel {
     Pixel pixel;
@@ -52,7 +53,7 @@ JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, int block_size, int max_compress
  * @param   jbk_file
  * @return  TGA_File
  */
-TGA_File jbk_decompress_to_tga(JBK_File *jbk_file);
+TGA_File jbk_decompress_to_tga(const JBK_File *jbk_file);
 
 /**
  * @brief   save jbk file
@@ -63,7 +64,7 @@ TGA_File jbk_decompress_to_tga(JBK_File *jbk_file);
  * @param   block_size
  * @param   len number of compressed pixels
  */
-void jbk_save_file(const char *filename, JBK_Pixel *image, TGA_File *tga_file, uint16_t block_size, uint32_t len);
+void jbk_save_file(const char *filename, JBK_Pixel *image, const TGA_File *tga_file, const uint16_t block_size, const uint32_t len);
 
 /**
  * @brief   loads jbk file into struct

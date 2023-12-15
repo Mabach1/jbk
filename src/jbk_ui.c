@@ -1,5 +1,7 @@
 #include "jbk_ui.h"
 
+#define FORMAT_SIZE (4096)
+
 typedef enum _JBK_Error {
     UNRECOGNIZED_ACTION,
     NO_INPUT,
@@ -12,6 +14,24 @@ typedef enum _JBK_Error {
     ARGC,
     NO_COMPRESS_FLAG
 } JBK_ErrorMsg;
+
+void jbk_error(const char *format, ...) {
+    char buffer[FORMAT_SIZE] = {0}; 
+
+    va_list args; 
+    va_start(args, format);
+    vsnprintf(buffer, FORMAT_SIZE, format, args);
+
+    fprintf(stderr, "\033[31m+ jbk error:\033[0m");
+    fprintf(stderr, "%s!\n", buffer);
+
+    va_end(args);
+}
+
+void jbk_exit(void) {
+    fprintf(stderr, "+ Aborting with value of 1!\n");
+    exit(EXIT_FAILURE);
+}
 
 const char *jbk_get_error(JBK_ErrorMsg err) {
     switch (err) {
@@ -41,8 +61,8 @@ const char *jbk_get_error(JBK_ErrorMsg err) {
 
 JBK_Action jbk_choose_action(const char *fst_arg) {
     if (!fst_arg) {
-        fprintf(stderr, "\033[31m+ jbk error:\033[0m No arguments provided!\n+ aborting with value of 1!\n");
-        exit(EXIT_FAILURE);
+        jbk_error("No arguments provided!");
+        jbk_exit();
     }
 
     if (!strcmp(fst_arg, "compress")) {
@@ -57,16 +77,17 @@ JBK_Action jbk_choose_action(const char *fst_arg) {
         return INFO;
     }
 
-    fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n+ Aborting with value of 1!\n", jbk_get_error(UNRECOGNIZED_ACTION));
-    exit(EXIT_FAILURE);
+
+    jbk_error(jbk_get_error(UNRECOGNIZED_ACTION));
+    jbk_exit();
 
     return 0;
 }
 
 CompressArgs compress_args_slurp(int argc, const char **argv) {
     if (argc != 10 && argc != 12) {
-        fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n+ Aborting with value of 1!\n", jbk_get_error(ARGC));
-        exit(EXIT_FAILURE);
+        jbk_error(jbk_get_error(ARGC));
+        jbk_exit();
     }
 
     CompressArgs res = {.input = NULL, .output = NULL, .max_diff = 0, .block_size = 0, .compress_flag = false};
@@ -117,28 +138,26 @@ CompressArgs compress_args_slurp(int argc, const char **argv) {
         }
 
         if (!input_assigned) {
-            fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n", jbk_get_error(NO_INPUT));
+            jbk_error(jbk_get_error(NO_INPUT));
         }
 
         if (!output_assigned) {
-            fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n", jbk_get_error(NO_OUTPUT));
+            jbk_error(jbk_get_error(NO_OUTPUT));
         }
 
         if (!block_size_assigned) {
-            fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n", jbk_get_error(NO_BLOCK_SIZE));
+            jbk_error(jbk_get_error(NO_BLOCK_SIZE));
         }
 
         if (!max_diff_assigned) {
-            fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n", jbk_get_error(NO_MAX_DIFF));
+            jbk_error(jbk_get_error(NO_MAX_DIFF));
         }
 
         if (!compress_flag_assigned) {
-            fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n", jbk_get_error(NO_COMPRESS_FLAG));
+            jbk_error(jbk_get_error(NO_COMPRESS_FLAG));
         }
 
-        fprintf(stdout, "+ Aborting with value of 1!\n");
-
-        exit(EXIT_FAILURE);
+        jbk_exit();
     }
 
     return res;
@@ -151,8 +170,8 @@ void compress_args_free(CompressArgs *args) {
 
 DecompressArgs decompress_args_slurp(int argc, const char **argv) {
     if (argc != 6) {
-        fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n+ Aborting with value of 1!\n", jbk_get_error(ARGC));
-        exit(EXIT_FAILURE);
+        jbk_error(jbk_get_error(ARGC));
+        jbk_exit();
     }
 
     DecompressArgs res = {.input = NULL, .output = NULL};
@@ -183,16 +202,14 @@ DecompressArgs decompress_args_slurp(int argc, const char **argv) {
         }
 
         if (!input_assigned) {
-            fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n", jbk_get_error(NO_INPUT));
+            jbk_error(jbk_get_error(NO_INPUT));
         }
 
         if (!output_assigned) {
-            fprintf(stderr, "\033[31m+ JBK Error:\033[0m %s!\n", jbk_get_error(NO_OUTPUT));
+            jbk_error(jbk_get_error(NO_OUTPUT));
         }
 
-        fprintf(stdout, "+ Aborting with value of 1!\n");
-
-        exit(EXIT_FAILURE);
+        jbk_exit();
     }
 
     return res;

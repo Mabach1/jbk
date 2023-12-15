@@ -48,13 +48,13 @@ void compress_block(uint16_t block_starting_height, uint16_t block_starting_widt
 
 JBK_Pixel *jbk_compress_tga(TGA_File *restrict tga_file, int block_size, int max_compress_difference, uint32_t *alen, bool compress_flag) {
     if (block_size <= 1 || (tga_file->header.width % block_size != 0) || (tga_file->header.height % block_size != 0)) {
-        fprintf(stderr, "\033[31m+ JBK Error:\033[0m Invalid value (%d) of block size!\n+ Aborting with 1!\n", block_size);
-        exit(EXIT_FAILURE);
+        jbk_error("Invalid value (%d) of block size!", block_size);
+        jbk_exit();
     }
 
     if (max_compress_difference < 0) {
-        fprintf(stderr, "\033[31m+ JBK Error:\033[0m Invalid value (%d) of max difference!\n+ Aborting with 1!\n", max_compress_difference);
-        exit(EXIT_FAILURE);
+        jbk_error("Invalid value (%d) of max difference", max_compress_difference);
+        jbk_exit();
     }
 
     Pixel *buf = tga_file->image;
@@ -64,7 +64,7 @@ JBK_Pixel *jbk_compress_tga(TGA_File *restrict tga_file, int block_size, int max
 
     JBK_Pixel *res = (JBK_Pixel *)malloc(sizeof(JBK_Pixel) * height * width);
     assert(res && "Allocation of compressed pixels failed!\n");
-
+   
     uint32_t index = 0;
 
     for (uint16_t i = 0; i < height; i += block_size) {
@@ -99,17 +99,17 @@ int is_jbk_file(const char *filename) {
     return 1;
 }
 
-void jbk_save_file(const char *filename, JBK_Pixel *image, TGA_File *tga_file, uint16_t block_size, uint32_t len) {
+void jbk_save_file(const char *filename, JBK_Pixel *image, const TGA_File *tga_file, const uint16_t block_size, const uint32_t len) {
     if (!is_jbk_file(filename)) {
-        fprintf(stderr, "\033[31m+ JBK Error:\033[0m File [%s] is not a jbk file!\n+ Aborting with 1!\n", filename);
-        exit(EXIT_FAILURE);
+        jbk_error("File [%s] is not a jbk file", filename);
+        jbk_exit();
     }
 
     FILE *file_ptr = fopen(filename, "wb");
 
     if (!file_ptr) {
-        fprintf(stderr, "\033[31m+ JBK Error:\033[0m Couldn't open compressed file [%s]!\n+ Aborting with 1!\n", filename);
-        exit(EXIT_FAILURE);
+        jbk_error("Couldn't open compressed file [%s]", filename);
+        jbk_exit();
     }
 
     assert(fwrite(&tga_file->header, sizeof(TGA_Header), 1, file_ptr) == 1);
@@ -126,8 +126,8 @@ JBK_File jbk_open_file(const char *filename) {
     FILE *file_ptr = fopen(filename, "rb");
 
     if (!file_ptr) {
-        fprintf(stderr, "\033[31m+ JBK Error:\033[0m Couldn't open compressed file [%s] for decompression!\n+ Aborting with 1!\n", filename);
-        exit(EXIT_FAILURE);
+        jbk_error("Couldn't open compressed file [%s] for decompression", filename);
+        jbk_exit();
     }
 
     JBK_File res = {0};
@@ -144,9 +144,13 @@ JBK_File jbk_open_file(const char *filename) {
     return res;
 }
 
-void jbk_close_file(JBK_File *file) { free(file->image); }
+void jbk_close_file(JBK_File *file) { 
+    if (file->image) {
+        free(file->image); 
+    }
+}
 
-TGA_File jbk_decompress_to_tga(JBK_File *jbk_file) {
+TGA_File jbk_decompress_to_tga(const JBK_File *jbk_file) {
     TGA_File res = {0};
 
     res.header = jbk_file->tga_header;

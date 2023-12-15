@@ -15,8 +15,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "tga.h"
+
+
+/**
+ * @brief   displaying error messages
+ * 
+ * @param   format 
+ * @param   ... 
+ */
+void jbk_error(const char *format, ...);
+
+/**
+ * @brief   exiting with error message
+ * 
+ */
+void jbk_exit(void);
 
 typedef enum { COMPRESS, DECOMPRESS, INFO } JBK_Action;
 
