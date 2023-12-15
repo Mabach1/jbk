@@ -15,6 +15,7 @@
       - [Without the `COMPRESS_OVER_U8_MAX` flag](#without-the-compress_over_u8_max-flag)
       - [With the `COMPRESS_OVER_U8_MAX` flag](#with-the-compress_over_u8_max-flag)
   - [Resources](#resources)
+  - [Other resources](#other-resources)
 
 ## Introduction
 
@@ -77,3 +78,6 @@ The difference is in the 'length' calculation. When we're compressing we take a 
 * Data padding:
   * [Structure Member Alignment, Padding, and Data Packing](https://www.geeksforgeeks.org/structure-member-alignment-padding-and-data-packing/)
   * [GCC Structure Packing Pragmas](https://gcc.gnu.org/onlinedocs/gcc-4.9.3/gcc/Structure-Packing-Pragmas.html#Structure-Packing-Pragmas)
+
+## Other resources 
+* [picture used for examples](https://filesamples.com/formats/tga)
