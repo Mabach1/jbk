@@ -104,6 +104,7 @@ The difference is in the 'length' calculation. When we're compressing we take a 
 Without the COMPRESS_OVER_U8_MAX flag
 --------------------------------------
 ![without flag](./examples/images/carmack_compressed_without_flag.png)
+
 With the COMPRESS_OVER_U8_MAX flag
 ----------------------------------
 ![with flag](./examples/images/carmack_with_flag.png)

@@ -61,7 +61,7 @@ TGA_File tga_open_file(const char *filename);
 void tga_close_file(TGA_File *file);
 
 /**
- * @brief   save TGA file
+ * @brief   save TGA file with the given filename
  *
  * @param   filename
  * @param   file
