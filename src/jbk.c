@@ -51,7 +51,7 @@ JBK_Pixel *jbk_compress_tga(const TGA_File *tga_file, const CompressArgs *args, 
         jbk_exit();
     }
 
-    if (args->max_diff < 0) {
+    if (args->max_diff <= 0) {
         jbk_error("Invalid value (%d) of max difference", args->max_diff);
         jbk_exit();
     }

@@ -19,7 +19,6 @@
 
 #include "tga.h"
 
-
 /**
  * @brief   displaying error messages
  * 

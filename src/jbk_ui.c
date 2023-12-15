@@ -2,23 +2,10 @@
 
 #define FORMAT_SIZE (4096)
 
-typedef enum _JBK_Error {
-    UNRECOGNIZED_ACTION,
-    NO_INPUT,
-    INPUT_EXISTS,
-    NO_OUTPUT,
-    NO_MAX_DIFF,
-    WRONG_MAX_DIFF,
-    NO_BLOCK_SIZE,
-    WRONG_BLOCK_SIZE,
-    ARGC,
-    NO_COMPRESS_FLAG
-} JBK_ErrorMsg;
-
 void jbk_error(const char *format, ...) {
-    char buffer[FORMAT_SIZE] = {0}; 
+    char buffer[FORMAT_SIZE] = {0};
 
-    va_list args; 
+    va_list args;
     va_start(args, format);
     vsnprintf(buffer, FORMAT_SIZE, format, args);
 
@@ -31,32 +18,6 @@ void jbk_error(const char *format, ...) {
 void jbk_exit(void) {
     fprintf(stderr, "+ Aborting with value of 1!\n");
     exit(EXIT_FAILURE);
-}
-
-const char *jbk_get_error(JBK_ErrorMsg err) {
-    switch (err) {
-        case UNRECOGNIZED_ACTION:
-            return "Unrecognized action, can't proceed with (de)compression";
-        case NO_INPUT:
-            return "Didn't provide input path";
-        case INPUT_EXISTS:
-            return "Input doesn't exists";
-        case NO_OUTPUT:
-            return "Didn't provide output path";
-        case NO_MAX_DIFF:
-            return "Didn't provide max difference";
-        case WRONG_MAX_DIFF:
-            return "Invalid value of max difference";
-        case WRONG_BLOCK_SIZE:
-            return "Invalid value of block size";
-        case NO_BLOCK_SIZE:
-            return "Didn't provide block size";
-        case NO_COMPRESS_FLAG:
-            return "Didn't provide appropriate compress flag";
-        case ARGC:
-            return "Didn't proved correct amount of arguments";
-    }
-    return NULL;
 }
 
 JBK_Action jbk_choose_action(const char *fst_arg) {
@@ -77,8 +38,7 @@ JBK_Action jbk_choose_action(const char *fst_arg) {
         return INFO;
     }
 
-
-    jbk_error(jbk_get_error(UNRECOGNIZED_ACTION));
+    jbk_error("Unrecognized action, can't proceed with (de)compression");
     jbk_exit();
 
     return 0;
@@ -86,7 +46,7 @@ JBK_Action jbk_choose_action(const char *fst_arg) {
 
 CompressArgs compress_args_slurp(int argc, const char **argv) {
     if (argc != 10 && argc != 12) {
-        jbk_error(jbk_get_error(ARGC));
+        jbk_error("Didn't proved correct amount of arguments");
         jbk_exit();
     }
 
@@ -98,14 +58,7 @@ CompressArgs compress_args_slurp(int argc, const char **argv) {
     bool max_diff_assigned = false;
     bool compress_flag_assigned = false;
 
-    for (int i = 1; i < argc; ++i) {
-        if (strcmp(argv[i], "--COMPRESS_OVER_U8_MAX") == 0 && !compress_flag_assigned) {
-            if (strcmp(argv[i + 1], "true") == 0) {
-                res.compress_flag = true;
-            }
-            compress_flag_assigned = true;        
-        }
-
+    for (int i = 1; i < argc - 1; ++i) {
         if (strcmp(argv[i], "--input") == 0 && !input_assigned) {
             res.input = (char *)malloc(strlen(argv[i + 1]) + 1);
             strcpy(res.input, argv[i + 1]);
@@ -119,13 +72,24 @@ CompressArgs compress_args_slurp(int argc, const char **argv) {
         }
 
         if (strcmp(argv[i], "--block-size") == 0 && !block_size_assigned) {
-            res.block_size = atoi(argv[i + 1]);
-            block_size_assigned = true;
+            res.block_size = strtol(argv[i + 1], NULL, 0);
+            if (res.block_size != 0L) {
+                block_size_assigned = true;
+            }
         }
 
         if (strcmp(argv[i], "--max-diff") == 0 && !max_diff_assigned) {
-            res.max_diff = atoi(argv[i + 1]);
-            max_diff_assigned = true;
+            res.max_diff = strtol(argv[i + 1], NULL, 0);
+            if (res.max_diff != 0L) {
+                max_diff_assigned = true;
+            }
+        }
+
+        if (strcmp(argv[i], "--COMPRESS_OVER_U8_MAX") == 0 && !compress_flag_assigned) {
+            if (strcmp(argv[i + 1], "true") == 0) {
+                res.compress_flag = true;
+            }
+            compress_flag_assigned = true;
         }
     }
 
@@ -138,24 +102,16 @@ CompressArgs compress_args_slurp(int argc, const char **argv) {
         }
 
         if (!input_assigned) {
-            jbk_error(jbk_get_error(NO_INPUT));
+            jbk_error("Didn't provide input path");
         }
 
-        if (!output_assigned) {
-            jbk_error(jbk_get_error(NO_OUTPUT));
-        }
+        if (!output_assigned) jbk_error("Didn't provide output path");
 
-        if (!block_size_assigned) {
-            jbk_error(jbk_get_error(NO_BLOCK_SIZE));
-        }
+        if (!block_size_assigned) jbk_error("Didn't provide block size");
 
-        if (!max_diff_assigned) {
-            jbk_error(jbk_get_error(NO_MAX_DIFF));
-        }
+        if (!max_diff_assigned) jbk_error("Didn't provide max difference");
 
-        if (!compress_flag_assigned) {
-            jbk_error(jbk_get_error(NO_COMPRESS_FLAG));
-        }
+        if (res.compress_flag && !compress_flag_assigned) jbk_error("Didn't provide appropriate compress flag");
 
         jbk_exit();
     }
@@ -170,7 +126,7 @@ void compress_args_free(CompressArgs *args) {
 
 DecompressArgs decompress_args_slurp(int argc, const char **argv) {
     if (argc != 6) {
-        jbk_error(jbk_get_error(ARGC));
+        jbk_error("Didn't proved correct amount of arguments");
         jbk_exit();
     }
 
@@ -201,13 +157,9 @@ DecompressArgs decompress_args_slurp(int argc, const char **argv) {
             free(res.output);
         }
 
-        if (!input_assigned) {
-            jbk_error(jbk_get_error(NO_INPUT));
-        }
+        if (!input_assigned) jbk_error("Didn't provide input path");
 
-        if (!output_assigned) {
-            jbk_error(jbk_get_error(NO_OUTPUT));
-        }
+        if (!output_assigned) jbk_error("Didn't provide output path");
 
         jbk_exit();
     }
@@ -251,8 +203,8 @@ void jbk_info(void) {
     fprintf(stdout, "  + Compression\n");
     fprintf(stdout,
             "  - ./jbk compress\n"
-            "\t--input [path to TGA file]\n" 
-            "\t--output [path to JBK file]\n" 
+            "\t--input [path to TGA file]\n"
+            "\t--output [path to JBK file]\n"
             "\t--max-diff [max difference of neighboring pixels]\n"
             "\t--block-size [block size]\n"
             "\t--COMPRESS_OVER_U8_MAX true (optional)\n");
