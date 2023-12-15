@@ -7,8 +7,7 @@
  * @copyright   Copyright (c) 2024
  *
  */
-#ifndef __JBK_USER_INTERFACE__
-#define __JBK_USER_INTERFACE__
+#pragma once
 
 #include <assert.h>
 #include <stdbool.h>
@@ -98,5 +97,3 @@ JBK_Action jbk_choose_action(const char *fst_arg);
  * @param   decompression_args (can be optional, => NULL)
  */
 void jbk_show_info(JBK_Action action, CompressArgs *compression_args, DecompressArgs *decompression_args);
-
-#endif /* __JBK_USER_INTERFACE__ */

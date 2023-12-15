@@ -6,34 +6,37 @@ TGA_Header tga_load_header(FILE *file_ptr) {
     return header;
 }
 
-Pixel *tga_load_image(TGA_Header *header, FILE *file_ptr) {
+Pixel *tga_load_image(const TGA_Header *header, FILE *file_ptr) {
     Pixel *pixels = (Pixel *)malloc(sizeof(Pixel) * header->width * header->height);
     assert(fread(pixels, sizeof(Pixel) * header->width * header->height, 1, file_ptr) == 1);
     return pixels;
 }
 
-int is_tga_file(const char *filename) {
+bool is_tga_file(const char *filename) {
     const char *extension = ".tga";
 
-    for (int i = strlen(filename) - 1, j = 3; i >= (int)strlen(filename) - 4; --i) {
+    const int extension_len = strlen(extension);
+    const int filename_len = strlen(filename);
+
+    for (int i = filename_len - 1, j = extension_len - 1; i >= filename_len - extension_len; --i) {
         if (extension[j--] != filename[i]) {
-            return 0;
+            return false;
         }
     }
 
-    return 1;
+    return true;
 }
 
 TGA_File tga_open_file(const char *filename) {
     if (!is_tga_file(filename)) {
-        jbk_error("File [%s] is not a TGA file", filename);
+        jbk_error("File %s is not a TGA file", filename);
         jbk_exit();
     }
 
     FILE *file_ptr = fopen(filename, "rb");
 
     if (!file_ptr) {
-        jbk_error("Couldn't open [%s] for compression", filename);
+        jbk_error("Couldn't open %s for compression", filename);
         jbk_exit();
     }
 
@@ -47,11 +50,11 @@ TGA_File tga_open_file(const char *filename) {
     return file;
 }
 
-void tga_save_file(const char *filename, TGA_File *file) {
+void tga_save_file(const char *filename, const TGA_File *file) {
     FILE *file_ptr = fopen(filename, "wb");
 
     if (!file_ptr) {
-        jbk_error("Couldn't save file [%s]", filename);
+        jbk_error("Couldn't save file %s", filename);
         jbk_exit();
     }
 

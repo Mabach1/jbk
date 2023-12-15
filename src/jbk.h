@@ -7,8 +7,7 @@
  * @copyright   Copyright (c) 2024
  *
  */
-#ifndef __JBK_H__
-#define __JBK_H__
+#pragma once
 
 #include <assert.h>
 #include <stdbool.h>
@@ -80,5 +79,3 @@ JBK_File jbk_open_file(const char *filename);
  * @param   file
  */
 void jbk_close_file(JBK_File *file);
-
-#endif /* JBK_H */

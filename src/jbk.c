@@ -74,6 +74,7 @@ JBK_Pixel *jbk_compress_tga(const TGA_File *tga_file, const CompressArgs *args, 
 
             compress_block(i, j, width, res, buf, &index, args);
 
+            // at the end of block we automaticaly start a new sequence of pixels
             index += 1;
         }
     }
@@ -89,7 +90,10 @@ JBK_Pixel *jbk_compress_tga(const TGA_File *tga_file, const CompressArgs *args, 
 bool is_jbk_file(const char *filename) {
     const char *extension = ".jbk";
 
-    for (int i = strlen(filename) - 1, j = strlen(extension) - 1; i >= (int)strlen(filename) - 4; --i) {
+    const int extension_len = strlen(extension);
+    const int filename_len = strlen(filename);
+
+    for (int i = filename_len - 1, j = extension_len - 1; i >= filename_len - extension_len; --i) {
         if (extension[j--] != filename[i]) {
             return false;
         }
@@ -100,14 +104,14 @@ bool is_jbk_file(const char *filename) {
 
 void jbk_save_file(const char *filename, JBK_Pixel *image, const TGA_File *tga_file, const uint16_t block_size, const uint32_t len) {
     if (!is_jbk_file(filename)) {
-        jbk_error("File [%s] is not a jbk file", filename);
+        jbk_error("File %s is not a jbk file", filename);
         jbk_exit();
     }
 
     FILE *file_ptr = fopen(filename, "wb");
 
     if (!file_ptr) {
-        jbk_error("Couldn't open compressed file [%s]", filename);
+        jbk_error("Couldn't open compressed file %s", filename);
         jbk_exit();
     }
 
@@ -125,7 +129,7 @@ JBK_File jbk_open_file(const char *filename) {
     FILE *file_ptr = fopen(filename, "rb");
 
     if (!file_ptr) {
-        jbk_error("Couldn't open compressed file [%s] for decompression", filename);
+        jbk_error("Couldn't open compressed file %s for decompression", filename);
         jbk_exit();
     }
 

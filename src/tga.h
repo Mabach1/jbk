@@ -7,8 +7,7 @@
  * @copyright   Copyright (c) 2024
  *
  */
-#ifndef __TGA_H__
-#define __TGA_H__
+#pragma once
 
 #include <assert.h>
 #include <stdint.h>
@@ -67,6 +66,4 @@ void tga_close_file(TGA_File *file);
  * @param   filename
  * @param   file
  */
-void tga_save_file(const char *filename, TGA_File *file);
-
-#endif /* TGA_H */
+void tga_save_file(const char *filename, const TGA_File *file);
