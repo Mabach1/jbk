@@ -9,16 +9,13 @@ OBJS := $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRCS))
 .DEFAULT_GOAL := all
 
 $(BUILD_DIR)/jbk: $(OBJS)
-	@echo "+ Linking $@"
 	@$(CC) $(CFLAGS) $^ -o $@
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
-	@echo "+ Compiling $<"
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 .PHONY: clean
 clean:
-	@echo "+ Cleaning..."
 	@rm $(OBJS) -f
 	@rm $(BUILD_DIR)/jbk -f
 

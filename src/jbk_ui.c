@@ -22,7 +22,7 @@ void jbk_error(const char *format, ...) {
     va_start(args, format);
     vsnprintf(buffer, FORMAT_SIZE, format, args);
 
-    fprintf(stderr, "\033[31m+ jbk error:\033[0m");
+    fprintf(stderr, "\033[31m+ JBK ERROR:\033[0m ");
     fprintf(stderr, "%s!\n", buffer);
 
     va_end(args);
