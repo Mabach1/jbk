@@ -4,13 +4,12 @@
 
 int pixel_diff(Pixel p1, Pixel p2) { return (abs(p1.blue - p2.blue) + (abs(p1.green - p2.green)) + (abs(p1.red - p2.red))); }
 
-void compress_block(uint16_t block_starting_height, uint16_t block_starting_width, uint16_t width, uint16_t block_size, JBK_Pixel *res, Pixel *image_buf, uint32_t *index,
-                    int max_compress_difference, bool compress_flag) {
+void compress_block(uint16_t block_starting_height, uint16_t block_starting_width, uint16_t width, JBK_Pixel *res, Pixel *image_buf, uint32_t *index, const CompressArgs *args) {
     bool origin_checked = false;
     int index_copy = *index;
 
-    for (uint16_t i = 0; i < block_size; ++i) {
-        for (uint16_t j = 0; j < block_size; ++j) {
+    for (uint16_t i = 0; i < args->block_size; ++i) {
+        for (uint16_t j = 0; j < args->block_size; ++j) {
             size_t pos = BLOCK_POS(block_starting_height, block_starting_width, i, j, width);
 
             if (!origin_checked && pos == (size_t)BLOCK_POS(block_starting_height, block_starting_width, 0, 0, width)) {
@@ -22,7 +21,7 @@ void compress_block(uint16_t block_starting_height, uint16_t block_starting_widt
             if (UINT8_MAX == res[index_copy].len) {
                 index_copy += 1;
 
-                if (compress_flag) {
+                if (args->compress_flag) {
                     res[index_copy].pixel = res[index_copy - 1].pixel;
                 } else {
                     res[index_copy].pixel = image_buf[pos];
@@ -33,7 +32,7 @@ void compress_block(uint16_t block_starting_height, uint16_t block_starting_widt
                 continue;
             }
 
-            if (pixel_diff(res[index_copy].pixel, image_buf[pos]) <= max_compress_difference) {
+            if (pixel_diff(res[index_copy].pixel, image_buf[pos]) <= args->max_diff) {
                 res[index_copy].len += 1;
             } else {
                 index_copy += 1;
@@ -46,14 +45,14 @@ void compress_block(uint16_t block_starting_height, uint16_t block_starting_widt
     *index = index_copy;
 }
 
-JBK_Pixel *jbk_compress_tga(TGA_File *restrict tga_file, int block_size, int max_compress_difference, uint32_t *alen, bool compress_flag) {
-    if (block_size <= 1 || (tga_file->header.width % block_size != 0) || (tga_file->header.height % block_size != 0)) {
-        jbk_error("Invalid value (%d) of block size!", block_size);
+JBK_Pixel *jbk_compress_tga(const TGA_File *tga_file, const CompressArgs *args, uint32_t *alen) {
+    if (args->block_size <= 1 || (tga_file->header.width % args->block_size != 0) || (tga_file->header.height % args->block_size != 0)) {
+        jbk_error("Invalid value (%d) of block size!", args->block_size);
         jbk_exit();
     }
 
-    if (max_compress_difference < 0) {
-        jbk_error("Invalid value (%d) of max difference", max_compress_difference);
+    if (args->max_diff < 0) {
+        jbk_error("Invalid value (%d) of max difference", args->max_diff);
         jbk_exit();
     }
 
@@ -64,16 +63,16 @@ JBK_Pixel *jbk_compress_tga(TGA_File *restrict tga_file, int block_size, int max
 
     JBK_Pixel *res = (JBK_Pixel *)malloc(sizeof(JBK_Pixel) * height * width);
     assert(res && "Allocation of compressed pixels failed!\n");
-   
+
     uint32_t index = 0;
 
-    for (uint16_t i = 0; i < height; i += block_size) {
-        for (uint16_t j = 0; j < width; j += block_size) {
+    for (uint16_t i = 0; i < height; i += args->block_size) {
+        for (uint16_t j = 0; j < width; j += args->block_size) {
             // first pixel in the block
             res[index].pixel = buf[BLOCK_POS(i, j, 0, 0, width)];
             res[index].len = 1;
 
-            compress_block(i, j, width, block_size, res, buf, &index, max_compress_difference, compress_flag);
+            compress_block(i, j, width, res, buf, &index, args);
 
             index += 1;
         }
@@ -87,16 +86,16 @@ JBK_Pixel *jbk_compress_tga(TGA_File *restrict tga_file, int block_size, int max
     return res;
 }
 
-int is_jbk_file(const char *filename) {
+bool is_jbk_file(const char *filename) {
     const char *extension = ".jbk";
 
     for (int i = strlen(filename) - 1, j = strlen(extension) - 1; i >= (int)strlen(filename) - 4; --i) {
         if (extension[j--] != filename[i]) {
-            return 0;
+            return false;
         }
     }
 
-    return 1;
+    return true;
 }
 
 void jbk_save_file(const char *filename, JBK_Pixel *image, const TGA_File *tga_file, const uint16_t block_size, const uint32_t len) {
@@ -144,9 +143,9 @@ JBK_File jbk_open_file(const char *filename) {
     return res;
 }
 
-void jbk_close_file(JBK_File *file) { 
+void jbk_close_file(JBK_File *file) {
     if (file->image) {
-        free(file->image); 
+        free(file->image);
     }
 }
 

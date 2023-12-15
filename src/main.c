@@ -4,7 +4,7 @@ void compress(CompressArgs *args) {
     TGA_File tga = tga_open_file(args->input);
 
     uint32_t num_pixel = 0;
-    JBK_Pixel *compress_image = jbk_compress_tga(&tga, args->block_size, args->max_diff, &num_pixel, args->compress_flag);
+    JBK_Pixel *compress_image = jbk_compress_tga(&tga, args, &num_pixel);
 
     jbk_save_file(args->output, compress_image, &tga, args->block_size, num_pixel);
 

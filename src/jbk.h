@@ -45,7 +45,7 @@ typedef struct _JBK_File {
  * @param   compress_flag whether or not we'll be compressing over maximum value of uin8_t (default value: false)
  * @return  JBK_Pixel*
  */
-JBK_Pixel *jbk_compress_tga(TGA_File *tga_file, int block_size, int max_compress_difference, uint32_t *alen, bool compress_flag);
+JBK_Pixel *jbk_compress_tga(const TGA_File *tga_file, const CompressArgs *args, uint32_t *alen);
 
 /**
  * @brief   decompress jbk file into a tga file
