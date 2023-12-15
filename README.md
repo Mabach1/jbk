@@ -7,7 +7,10 @@ Table of Contents
 - [JBK - compression of TGA files](#jbk---compression-of-tga-files)
 - [Table of Contents](#table-of-contents)
 - [Introduction](#introduction)
-  - [JBK](#jbk)
+- [JBK Algorithm](#jbk-algorithm)
+  - [Compression Process:](#compression-process)
+  - [Sequence Representation:](#sequence-representation)
+  - [Pixel Similarity:](#pixel-similarity)
 - [Build](#build)
 - [Usage](#usage)
   - [Compression](#compression)
@@ -24,10 +27,33 @@ Introduction
 
 This repository houses JBK, a command-line interface application designed for de/compressing TGA files into/from JBK format. Developed as a semester project for the Introduction to Programming course at VSB-TUO.
 
-JBK
----
 
-JBK is a simple CLI application that facilitates the compression and decompression of TGA files using the JBK format.
+JBK Algorithm
+==============
+
+Image compression in JBK occurs in blocks, square sections of the image with dimensions specified as input. Imagine the image is divided into blocks of size (block size, block size), starting from position (0, 0). Compression is performed independently on each block.
+
+Compression involves traversing pixels in a "row-major" order within a block, starting from the top-left corner and moving right and down. Each block is compressed as if it were an independent image.
+
+Compression Process:
+---------------------
+
+1. Create a sequence with the first pixel of the block.
+2. Traverse pixels in row-major order, comparing each pixel to the current sequence.
+3. If the current pixel is similar to the sequence, increase the sequence length.
+4. If not, record the current sequence and create a new sequence with the current pixel.
+5. Sequences are created only within a block.
+
+Sequence Representation:
+------------------------
+
+A sequence contains the RGB value of the pixel and a number indicating how many times the same (or similar) pixel occurred consecutively within the block. For example, if a 4x4 block consists of only red pixels, it can be compressed into a single sequence with pixel=(255, 0, 0), length=16.
+
+Pixel Similarity:
+-----------------
+
+Pixel similarity is determined by the sum of the absolute differences in color components. Two pixels are considered similar if their difference is less than or equal to the specified maximum difference.
+
 
 Build
 ====
