@@ -8,6 +8,13 @@ OBJS := $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRCS))
 
 .DEFAULT_GOAL := all
 
+.PHONY: directories
+
+directories: ${BUILD_DIR}
+
+${BUILD_DIR}:
+	@mkdir ${BUILD_DIR}
+
 $(BUILD_DIR)/jbk: $(OBJS)
 	@$(CC) $(CFLAGS) $^ -o $@
 
@@ -20,8 +27,7 @@ clean:
 	@rm $(BUILD_DIR)/jbk -f
 
 .PHONY: all
-all: $(BUILD_DIR)/jbk
+all: directories $(BUILD_DIR)/jbk
 
 .PHONY: force-rebuild
 force-rebuild: clean all
-
