@@ -6,7 +6,7 @@ int pixel_diff(Pixel p1, Pixel p2) { return (abs(p1.blue - p2.blue) + (abs(p1.gr
 
 void compress_block(uint16_t block_starting_height, uint16_t block_starting_width, uint16_t width, JBK_Pixel *res, Pixel *image_buf, uint32_t *index, const CompressArgs *args) {
     bool origin_checked = false;
-    int index_copy = *index;
+    uint32_t index_copy = *index;
 
     for (uint16_t i = 0; i < args->block_size; ++i) {
         for (uint16_t j = 0; j < args->block_size; ++j) {
