@@ -7,7 +7,8 @@
  * @copyright   Copyright (c) 2024
  *
  */
-#pragma once
+#ifndef JBK_TGA
+#define JBK_TGA
 
 #include <assert.h>
 #include <stdint.h>
@@ -67,3 +68,5 @@ void tga_close_file(TGA_File *file);
  * @param   file
  */
 void tga_save_file(const char *filename, const TGA_File *file);
+
+#endif /* JBK_TGA */

@@ -7,11 +7,11 @@
  * @copyright   Copyright (c) 2024
  *
  */
-#ifndef __JBK_FOR_TGA__
-#define __JBK_FOR_TGA__
+#ifndef JBK_JBK_FOR_TGA
+#define JBK_JBK_FOR_TGA
 
 #include "jbk.h"
 #include "jbk_ui.h"
 #include "tga.h"
 
-#endif /* JBK_FOR_TGA */
+#endif  // JBK_FOR_TGA

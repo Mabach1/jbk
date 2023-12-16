@@ -7,28 +7,29 @@
  * @copyright   Copyright (c) 2024
  *
  */
-#pragma once
+#ifndef JBK_JBK_UI
+#define JBK_JBK_UI
 
 #include <assert.h>
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdarg.h>
 
 #include "tga.h"
 
 /**
  * @brief   displaying error messages
- * 
- * @param   format 
- * @param   ... 
+ *
+ * @param   format
+ * @param   ...
  */
 void jbk_error(const char *format, ...);
 
 /**
  * @brief   exiting with error message
- * 
+ *
  */
 void jbk_exit(void);
 
@@ -97,3 +98,5 @@ JBK_Action jbk_choose_action(const char *fst_arg);
  * @param   decompression_args (can be optional, => NULL)
  */
 void jbk_show_info(JBK_Action action, CompressArgs *compression_args, DecompressArgs *decompression_args);
+
+#endif /* JBK_JBK_UI */

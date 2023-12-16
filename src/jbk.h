@@ -7,7 +7,8 @@
  * @copyright   Copyright (c) 2024
  *
  */
-#pragma once
+#ifndef JBK_JBK
+#define JBK_JBK
 
 #include <assert.h>
 #include <stdbool.h>
@@ -15,8 +16,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "tga.h"
 #include "jbk_ui.h"
+#include "tga.h"
 
 typedef struct _JBK_Pixel {
     Pixel pixel;
@@ -79,3 +80,5 @@ JBK_File jbk_open_file(const char *filename);
  * @param   file
  */
 void jbk_close_file(JBK_File *file);
+
+#endif /* JBK_JBK */
