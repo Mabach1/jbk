@@ -116,6 +116,7 @@ Resources
 * [Creating TGA Image files (Paul Bourke, 1996)](http://www.paulbourke.net/dataformats/tga/)
 * Data padding:
   * [Structure Member Alignment, Padding, and Data Packing](https://www.geeksforgeeks.org/structure-member-alignment-padding-and-data-packing/)
+  * [Microsoft pack pragma](https://learn.microsoft.com/en-us/cpp/preprocessor/pack?view=msvc-170)
   * [GCC Structure Packing Pragmas](https://gcc.gnu.org/onlinedocs/gcc-4.9.3/gcc/Structure-Packing-Pragmas.html#Structure-Packing-Pragmas)
 
 Other resources 
