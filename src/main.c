@@ -1,17 +1,17 @@
 #include "jbk_for_tga.h"
 
-void compress(CompressArgs *args) {
+void compress(const CompressArgs *args) {
     TGA_File tga = tga_open_file(args->input);
 
     uint32_t num_pixel = 0;
-    JBK_Pixel *compress_image = jbk_compress_tga(&tga, args, &num_pixel);
+    JBK_Pixel *compressed_image = jbk_compress_tga(&tga, args, &num_pixel);
 
-    jbk_save_file(args->output, compress_image, &tga, args->block_size, num_pixel);
+    jbk_save_file(args->output, compressed_image, &tga, args->block_size, num_pixel);
 
     tga_close_file(&tga);
 }
 
-void decompress(DecompressArgs *args) {
+void decompress(const DecompressArgs *args) {
     JBK_File jbk = jbk_open_file(args->input);
     TGA_File tga = jbk_decompress_to_tga(&jbk);
 
