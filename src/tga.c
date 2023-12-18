@@ -1,12 +1,12 @@
 #include "tga.h"
 
-TGA_Header tga_load_header(FILE *file_ptr) {
-    TGA_Header header = {0};
+TGAHeader tga_load_header(FILE *file_ptr) {
+    TGAHeader header = {0};
     assert(fread(&header, sizeof(header), 1, file_ptr) == 1);
     return header;
 }
 
-Pixel *tga_load_image(const TGA_Header *header, FILE *file_ptr) {
+Pixel *tga_load_image(const TGAHeader *header, FILE *file_ptr) {
     Pixel *pixels = (Pixel *)malloc(sizeof(Pixel) * header->width * header->height);
     assert(fread(pixels, sizeof(Pixel) * header->width * header->height, 1, file_ptr) == 1);
     return pixels;
@@ -27,7 +27,7 @@ bool is_tga_file(const char *filename) {
     return true;
 }
 
-TGA_File tga_open_file(const char *filename) {
+TGAFile tga_open_file(const char *filename) {
     if (!is_tga_file(filename)) {
         jbk_error("File %s is not a TGA file", filename);
         jbk_exit();
@@ -40,7 +40,7 @@ TGA_File tga_open_file(const char *filename) {
         jbk_exit();
     }
 
-    TGA_File file = {0};
+    TGAFile file = {0};
 
     file.header = tga_load_header(file_ptr);
 
@@ -57,7 +57,7 @@ TGA_File tga_open_file(const char *filename) {
     return file;
 }
 
-void tga_save_file(const char *filename, const TGA_File *file) {
+void tga_save_file(const char *filename, const TGAFile *file) {
     FILE *file_ptr = fopen(filename, "wb");
 
     if (!file_ptr) {
@@ -65,14 +65,14 @@ void tga_save_file(const char *filename, const TGA_File *file) {
         jbk_exit();
     }
 
-    fwrite(&file->header, sizeof(TGA_Header), 1, file_ptr);
+    fwrite(&file->header, sizeof(TGAHeader), 1, file_ptr);
     fwrite(file->image, sizeof(Pixel) * file->header.width * file->header.height, 1, file_ptr);
 
     fclose(file_ptr);
 }
 
-void tga_close_file(TGA_File *file) { 
+void tga_close_file(TGAFile *file) {
     if (file->image) {
-        free(file->image); 
+        free(file->image);
     }
 }

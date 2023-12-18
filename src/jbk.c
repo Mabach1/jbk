@@ -4,7 +4,7 @@
 
 int pixel_diff(Pixel p1, Pixel p2) { return (abs(p1.blue - p2.blue) + (abs(p1.green - p2.green)) + (abs(p1.red - p2.red))); }
 
-void compress_block(uint16_t block_starting_height, uint16_t block_starting_width, uint16_t width, JBK_Pixel *res, Pixel *image_buf, uint32_t *index, const CompressArgs *args) {
+void compress_block(uint16_t block_starting_height, uint16_t block_starting_width, uint16_t width, JBKPixel *res, Pixel *image_buf, uint32_t *index, const CompressArgs *args) {
     bool origin_checked = false;
     uint32_t index_copy = *index;
 
@@ -45,7 +45,7 @@ void compress_block(uint16_t block_starting_height, uint16_t block_starting_widt
     *index = index_copy;
 }
 
-JBK_Pixel *jbk_compress_tga(const TGA_File *tga_file, const CompressArgs *args, uint32_t *alen) {
+JBKPixel *jbk_compress_tga(const TGAFile *tga_file, const CompressArgs *args, uint32_t *alen) {
     if (args->block_size <= 1 || (tga_file->header.width % args->block_size != 0) || (tga_file->header.height % args->block_size != 0)) {
         jbk_error("Invalid value (%d) of block size!", args->block_size);
         jbk_exit();
@@ -61,7 +61,7 @@ JBK_Pixel *jbk_compress_tga(const TGA_File *tga_file, const CompressArgs *args, 
     uint16_t height = tga_file->header.height;
     uint16_t width = tga_file->header.width;
 
-    JBK_Pixel *res = (JBK_Pixel *)malloc(sizeof(JBK_Pixel) * height * width);
+    JBKPixel *res = (JBKPixel *)malloc(sizeof(JBKPixel) * height * width);
     assert(res && "Allocation of compressed pixels failed!\n");
 
     uint32_t index = 0;
@@ -81,7 +81,7 @@ JBK_Pixel *jbk_compress_tga(const TGA_File *tga_file, const CompressArgs *args, 
 
     *alen = index;
 
-    res = realloc(res, sizeof(JBK_Pixel) * index);
+    res = realloc(res, sizeof(JBKPixel) * index);
     assert(res && "Reallocation of compressed pixels failed!\n");
 
     return res;
@@ -102,7 +102,7 @@ bool is_jbk_file(const char *filename) {
     return true;
 }
 
-void jbk_save_file(const char *filename, JBK_Pixel *image, const TGA_File *tga_file, const uint16_t block_size, const uint32_t len) {
+void jbk_save_file(const char *filename, JBKPixel *image, const TGAFile *tga_file, const uint16_t block_size, const uint32_t len) {
     if (!is_jbk_file(filename)) {
         jbk_error("File %s is not a jbk file", filename);
         jbk_exit();
@@ -115,17 +115,17 @@ void jbk_save_file(const char *filename, JBK_Pixel *image, const TGA_File *tga_f
         jbk_exit();
     }
 
-    assert(fwrite(&tga_file->header, sizeof(TGA_Header), 1, file_ptr) == 1);
+    assert(fwrite(&tga_file->header, sizeof(TGAHeader), 1, file_ptr) == 1);
     assert(fwrite(&block_size, sizeof(uint16_t), 1, file_ptr) == 1);
     assert(fwrite(&len, sizeof(uint32_t), 1, file_ptr) == 1);
 
-    assert(fwrite(image, sizeof(JBK_Pixel) * len, 1, file_ptr) == 1);
+    assert(fwrite(image, sizeof(JBKPixel) * len, 1, file_ptr) == 1);
 
     fclose(file_ptr);
     free(image);
 }
 
-JBK_File jbk_open_file(const char *filename) {
+JBKFile jbk_open_file(const char *filename) {
     FILE *file_ptr = fopen(filename, "rb");
 
     if (!file_ptr) {
@@ -133,28 +133,28 @@ JBK_File jbk_open_file(const char *filename) {
         jbk_exit();
     }
 
-    JBK_File res = {0};
+    JBKFile res = {0};
 
-    assert(fread(&res.tga_header, sizeof(TGA_Header), 1, file_ptr) == 1);
+    assert(fread(&res.tga_header, sizeof(TGAHeader), 1, file_ptr) == 1);
     assert(fread(&res.jbk_header, sizeof(uint16_t), 1, file_ptr) == 1);
     assert(fread(&res.jbk_header.len, sizeof(uint32_t), 1, file_ptr) == 1);
 
-    res.image = (JBK_Pixel *)malloc(sizeof(JBK_Pixel) * res.jbk_header.len);
-    assert(fread(res.image, sizeof(JBK_Pixel), res.jbk_header.len, file_ptr) == res.jbk_header.len);
+    res.image = (JBKPixel *)malloc(sizeof(JBKPixel) * res.jbk_header.len);
+    assert(fread(res.image, sizeof(JBKPixel), res.jbk_header.len, file_ptr) == res.jbk_header.len);
 
     fclose(file_ptr);
 
     return res;
 }
 
-void jbk_close_file(JBK_File *file) {
+void jbk_close_file(JBKFile *file) {
     if (file->image) {
         free(file->image);
     }
 }
 
-TGA_File jbk_decompress_to_tga(const JBK_File *jbk_file) {
-    TGA_File res = {0};
+TGAFile jbk_decompress_to_tga(const JBKFile *jbk_file) {
+    TGAFile res = {0};
 
     res.header = jbk_file->tga_header;
     res.image = (Pixel *)malloc(sizeof(Pixel) * res.header.width * res.header.width);

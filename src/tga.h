@@ -32,7 +32,7 @@ typedef struct _TGA_Header {
     uint16_t height;
     uint8_t depth;
     uint8_t descriptor;
-} TGA_Header;
+} TGAHeader;
 #pragma pack(pop)
 
 typedef struct _Pixel {
@@ -42,24 +42,24 @@ typedef struct _Pixel {
 } Pixel;
 
 typedef struct _TGA_File {
-    TGA_Header header;
+    TGAHeader header;
     Pixel *image;
-} TGA_File;
+} TGAFile;
 
 /**
  * @brief   open TGA file
  *
  * @param   filename
- * @return  TGA_File
+ * @return  TGAFile
  */
-TGA_File tga_open_file(const char *filename);
+TGAFile tga_open_file(const char *filename);
 
 /**
  * @brief   close TGA file, necessary to call after being done using TGA file
  *
  * @param   file
  */
-void tga_close_file(TGA_File *file);
+void tga_close_file(TGAFile *file);
 
 /**
  * @brief   save TGA file with the given filename
@@ -67,6 +67,6 @@ void tga_close_file(TGA_File *file);
  * @param   filename
  * @param   file
  */
-void tga_save_file(const char *filename, const TGA_File *file);
+void tga_save_file(const char *filename, const TGAFile *file);
 
 #endif /* JBK_TGA */

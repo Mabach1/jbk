@@ -22,18 +22,18 @@
 typedef struct _JBK_Pixel {
     Pixel pixel;
     uint8_t len;
-} JBK_Pixel;
+} JBKPixel;
 
 typedef struct _JBK_Header {
     uint16_t block_size;
     uint32_t len;
-} JBK_Header;
+} JBKHeader;
 
 typedef struct _JBK_File {
-    TGA_Header tga_header;
-    JBK_Header jbk_header;
-    JBK_Pixel *image;
-} JBK_File;
+    TGAHeader tga_header;
+    JBKHeader jbk_header;
+    JBKPixel *image;
+} JBKFile;
 
 /**
  * @brief   Returns array of compressed pixels
@@ -43,17 +43,17 @@ typedef struct _JBK_File {
  * @param   max_compress_difference
  * @param   alen pointer to variable that will hold the number of compressed pixels
  * @param   compress_flag whether or not we'll be compressing over maximum value of uin8_t (default value: false)
- * @return  JBK_Pixel*
+ * @return  JBKPixel*
  */
-JBK_Pixel *jbk_compress_tga(const TGA_File *tga_file, const CompressArgs *args, uint32_t *alen);
+JBKPixel *jbk_compress_tga(const TGAFile *tga_file, const CompressArgs *args, uint32_t *alen);
 
 /**
  * @brief   decompress jbk file into a tga file
  *
  * @param   jbk_file
- * @return  TGA_File
+ * @return  TGAFile
  */
-TGA_File jbk_decompress_to_tga(const JBK_File *jbk_file);
+TGAFile jbk_decompress_to_tga(const JBKFile *jbk_file);
 
 /**
  * @brief   save jbk file
@@ -64,21 +64,21 @@ TGA_File jbk_decompress_to_tga(const JBK_File *jbk_file);
  * @param   block_size
  * @param   len number of compressed pixels
  */
-void jbk_save_file(const char *filename, JBK_Pixel *image, const TGA_File *tga_file, const uint16_t block_size, const uint32_t len);
+void jbk_save_file(const char *filename, JBKPixel *image, const TGAFile *tga_file, const uint16_t block_size, const uint32_t len);
 
 /**
  * @brief   loads jbk file into struct
  *
  * @param   filename
- * @return  JBK_File
+ * @return  JBKFile
  */
-JBK_File jbk_open_file(const char *filename);
+JBKFile jbk_open_file(const char *filename);
 
 /**
  * @brief   close jbk file, needs to be called when being done working with jbk file
  *
  * @param   file
  */
-void jbk_close_file(JBK_File *file);
+void jbk_close_file(JBKFile *file);
 
 #endif /* JBK_JBK */
