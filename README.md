@@ -25,7 +25,7 @@ Table of Contents
 Introduction
 ============
 
-This repository houses JBK, a command-line interface application designed for de/compressing TGA files into/from JBK format. Developed as a semester project for the Introduction to Programming course at VSB-TUO.
+This repository houses JBK, a command-line interface application designed for de/compressing TGA files from/into JBK format. Developed as a semester project for the Introduction to Programming course at VSB-TUO.
 
 
 Build
