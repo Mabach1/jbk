@@ -160,16 +160,16 @@ TGA_File jbk_decompress_to_tga(const JBK_File *jbk_file) {
     res.image = (Pixel *)malloc(sizeof(Pixel) * res.header.width * res.header.width);
     assert(res.image && "Couldn't allocate memory for storing pixels!\n");
 
-    uint32_t width = res.header.width;
-    uint32_t height = res.header.height;
+    uint16_t width = res.header.width;
+    uint16_t height = res.header.height;
     uint16_t block_size = jbk_file->jbk_header.block_size;
 
     size_t index = 0;
 
-    for (uint32_t i = 0; i < height; i += block_size) {
-        for (uint32_t j = 0; j < width; j += block_size) {
-            for (uint32_t k = 0; k < block_size; ++k) {
-                for (uint32_t l = 0; l < block_size; ++l) {
+    for (uint16_t i = 0; i < height; i += block_size) {
+        for (uint16_t j = 0; j < width; j += block_size) {
+            for (uint16_t k = 0; k < block_size; ++k) {
+                for (uint16_t l = 0; l < block_size; ++l) {
                     if (jbk_file->image[index].len <= 0) {
                         ++index;
                     }
