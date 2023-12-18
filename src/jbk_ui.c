@@ -1,6 +1,6 @@
 #include "jbk_ui.h"
 
-#define FORMAT_SIZE (4096)
+#define FORMAT_SIZE (512)
 
 void jbk_error(const char *format, ...) {
     char buffer[FORMAT_SIZE] = {0};
