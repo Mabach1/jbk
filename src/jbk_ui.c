@@ -8,6 +8,36 @@
 #define BLOCK_SIZE_FLAG "--block-size"
 #define COMPRESS_FLAG "--COMPRESS_OVER_U8_MAX"
 
+int string_to_int(const char *str, int *number) {
+    int res = 0;    
+
+    *number = 0; 
+    int sign = 1;
+
+    size_t index = 0;
+    size_t length = strlen(str);
+
+    // not very useful in our case
+    // while (index < length && (str[index] == ' ' || str[index] == '\t')) {
+    //     ++index;
+    // }
+
+    if (index < length && (str[index] == '-' || str[index] == '+')) {
+        sign = str[index] == '-' ? -1 : 1;
+        ++index;
+    }
+
+    while (index < length && str[index] >= '0' && str[index] <= '9') {
+        res = 1;
+        *number = (*number * 10) + (str[index] - '0');
+        ++index;
+    }
+
+    *number *= sign;
+
+    return res;
+}
+
 void jbk_error(const char *format, ...) {
     char buffer[FORMAT_SIZE] = {0};
 
@@ -78,15 +108,13 @@ CompressArgs compress_args_slurp(int argc, const char **argv) {
         }
 
         if (strcmp(argv[i], BLOCK_SIZE_FLAG) == 0 && !block_size_assigned) {
-            res.block_size = strtol(argv[i + 1], NULL, 0);
-            if (res.block_size != 0L) {
+            if (string_to_int(argv[i + 1], &res.block_size)) {
                 block_size_assigned = true;
             }
         }
 
         if (strcmp(argv[i], MAX_DIFF_FLAG) == 0 && !max_diff_assigned) {
-            res.max_diff = strtol(argv[i + 1], NULL, 0);
-            if (res.max_diff != 0L) {
+            if (string_to_int(argv[i + 1], &res.max_diff)) {
                 max_diff_assigned = true;
             }
         }
