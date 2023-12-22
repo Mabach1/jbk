@@ -2,6 +2,9 @@
 
 #define FORMAT_SIZE (512)
 
+#define _START_RED_TEXT_ "\033[31m"
+#define _END_RED_TEXT_ "\033[0m"
+
 #define INPUT_FLAG "--input"
 #define OUTPUT_FLAG "--output"
 #define MAX_DIFF_FLAG "--max-diff"
@@ -9,9 +12,9 @@
 #define COMPRESS_FLAG "--COMPRESS_OVER_U8_MAX"
 
 int string_to_int(const char *str, int *number) {
-    int res = 0;    
+    int res = 0;
 
-    *number = 0; 
+    *number = 0;
     int sign = 1;
 
     size_t index = 0;
@@ -45,8 +48,7 @@ void jbk_error(const char *format, ...) {
     va_start(args, format);
     vsnprintf(buffer, FORMAT_SIZE, format, args);
 
-    fprintf(stderr, "+ jbk:\033[31m fatal error:\033[0m ");
-    fprintf(stderr, "%s!\n", buffer);
+    fprintf(stderr, "+ jbk: " _START_RED_TEXT_ "fatal error:" _END_RED_TEXT_ " %s!\n", buffer);
 
     va_end(args);
 }
@@ -58,7 +60,7 @@ void jbk_exit(void) {
 
 JBK_Action jbk_choose_action(const char *fst_arg) {
     if (!fst_arg) {
-        jbk_error("No arguments provided!");
+        jbk_error("No arguments provided");
         jbk_exit();
     }
 

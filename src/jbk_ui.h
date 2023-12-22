@@ -17,8 +17,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "tga.h"
-
 /**
  * @brief   displaying error messages
  *
