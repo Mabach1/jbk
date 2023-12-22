@@ -2,6 +2,12 @@
 
 #define FORMAT_SIZE (512)
 
+#define INPUT_FLAG "--input"
+#define OUTPUT_FLAG "--output"
+#define MAX_DIFF_FLAG "--max-diff"
+#define BLOCK_SIZE_FLAG "--block-size"
+#define COMPRESS_FLAG "--COMPRESS_OVER_U8_MAX"
+
 void jbk_error(const char *format, ...) {
     char buffer[FORMAT_SIZE] = {0};
 
@@ -59,33 +65,33 @@ CompressArgs compress_args_slurp(int argc, const char **argv) {
     bool compress_flag_assigned = false;
 
     for (int i = 1; i < argc - 1; ++i) {
-        if (strcmp(argv[i], "--input") == 0 && !input_assigned) {
+        if (strcmp(argv[i], INPUT_FLAG) == 0 && !input_assigned) {
             res.input = (char *)malloc(strlen(argv[i + 1]) + 1);
             strcpy(res.input, argv[i + 1]);
             input_assigned = true;
         }
 
-        if (strcmp(argv[i], "--output") == 0 && !output_assigned) {
+        if (strcmp(argv[i], OUTPUT_FLAG) == 0 && !output_assigned) {
             res.output = (char *)malloc(1 + strlen(argv[i + 1]) + 1);
             strcpy(res.output, argv[i + 1]);
             output_assigned = true;
         }
 
-        if (strcmp(argv[i], "--block-size") == 0 && !block_size_assigned) {
+        if (strcmp(argv[i], BLOCK_SIZE_FLAG) == 0 && !block_size_assigned) {
             res.block_size = strtol(argv[i + 1], NULL, 0);
             if (res.block_size != 0L) {
                 block_size_assigned = true;
             }
         }
 
-        if (strcmp(argv[i], "--max-diff") == 0 && !max_diff_assigned) {
+        if (strcmp(argv[i], MAX_DIFF_FLAG) == 0 && !max_diff_assigned) {
             res.max_diff = strtol(argv[i + 1], NULL, 0);
             if (res.max_diff != 0L) {
                 max_diff_assigned = true;
             }
         }
 
-        if (strcmp(argv[i], "--COMPRESS_OVER_U8_MAX") == 0 && !compress_flag_assigned) {
+        if (strcmp(argv[i], COMPRESS_FLAG) == 0 && !compress_flag_assigned) {
             if (strcmp(argv[i + 1], "true") == 0) {
                 res.compress_flag = true;
             }
@@ -136,13 +142,13 @@ DecompressArgs decompress_args_slurp(int argc, const char **argv) {
     bool output_assigned = false;
 
     for (int i = 2; i < argc - 1; ++i) {
-        if (strcmp(argv[i], "--input") == 0 && !input_assigned) {
+        if (strcmp(argv[i], INPUT_FLAG) == 0 && !input_assigned) {
             res.input = (char *)malloc(1 + strlen(argv[i + 1]));
             strcpy(res.input, argv[i + 1]);
             input_assigned = true;
         }
 
-        if (strcmp(argv[i], "--output") == 0 && !output_assigned) {
+        if (strcmp(argv[i], OUTPUT_FLAG) == 0 && !output_assigned) {
             res.output = (char *)malloc(1 + strlen(argv[i + 1]));
             strcpy(res.output, argv[i + 1]);
             output_assigned = true;
