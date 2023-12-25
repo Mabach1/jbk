@@ -45,9 +45,22 @@ void compress_block(uint16_t block_starting_height, uint16_t block_starting_widt
     *index = index_copy;
 }
 
+void block_size_recommended(int height, int width) {
+    fprintf(stderr, "+ Recommended sizes: ");
+
+    for (int i = 1; i < 120; ++i) {
+        if ((height % i == 0) && (width % i == 0)) {
+            fprintf(stderr, "%d ", i);
+        }
+    }
+
+    fprintf(stderr, "\n");
+}
+
 JBKPixel *jbk_compress_tga(const TGAFile *tga_file, const CompressArgs *args, uint32_t *alen) {
     if (args->block_size <= 1 || (tga_file->header.width % args->block_size != 0) || (tga_file->header.height % args->block_size != 0)) {
         jbk_error("Invalid value (%d) of block size!", args->block_size);
+        block_size_recommended(tga_file->header.height, tga_file->header.width);
         jbk_exit();
     }
 

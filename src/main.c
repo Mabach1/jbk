@@ -24,7 +24,7 @@ void decompress(const DecompressArgs *args) {
 int main(int argc, const char **argv) {
     JBK_Action action = jbk_choose_action(argv[1]);
 
-    if (COMPRESS == action) {
+    if (COMPRESSING == action) {
         CompressArgs args = compress_args_slurp(argc, argv);
         compress(&args);
         jbk_show_info(action, &args, NULL);
@@ -32,7 +32,7 @@ int main(int argc, const char **argv) {
         return 0;
     }
 
-    if (DECOMPRESS == action) {
+    if (DECOMPRESSING == action) {
         DecompressArgs args = decompress_args_slurp(argc, argv);
         decompress(&args);
         jbk_show_info(action, NULL, &args);

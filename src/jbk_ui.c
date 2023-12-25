@@ -5,6 +5,8 @@
 #define _START_RED_TEXT_ "\033[31m"
 #define _END_RED_TEXT_ "\033[0m"
 
+enum { INPUT, OUTPUT, BLOCK_SIZE, MAX_DIFF, COMPRESS };
+
 #define INPUT_FLAG "--input"
 #define OUTPUT_FLAG "--output"
 #define MAX_DIFF_FLAG "--max-diff"
@@ -65,11 +67,11 @@ JBK_Action jbk_choose_action(const char *fst_arg) {
     }
 
     if (!strcmp(fst_arg, "compress")) {
-        return COMPRESS;
+        return COMPRESSING;
     }
 
     if (!strcmp(fst_arg, "decompress")) {
-        return DECOMPRESS;
+        return DECOMPRESSING;
     }
 
     if (!strcmp(fst_arg, "-info")) {
@@ -90,64 +92,53 @@ CompressArgs compress_args_slurp(int argc, const char **argv) {
 
     CompressArgs res = {.input = NULL, .output = NULL, .max_diff = 0, .block_size = 0, .compress_flag = false};
 
-    bool input_assigned = false;
-    bool output_assigned = false;
-    bool block_size_assigned = false;
-    bool max_diff_assigned = false;
-    bool compress_flag_assigned = false;
+    bool assigned[] = {false, false, false, false, false};
 
     for (int i = 1; i < argc - 1; ++i) {
-        if (strcmp(argv[i], INPUT_FLAG) == 0 && !input_assigned) {
+        if (strcmp(argv[i], INPUT_FLAG) == 0 && !assigned[INPUT]) {
             res.input = (char *)malloc(strlen(argv[i + 1]) + 1);
             strcpy(res.input, argv[i + 1]);
-            input_assigned = true;
-        }
-
-        if (strcmp(argv[i], OUTPUT_FLAG) == 0 && !output_assigned) {
+            assigned[INPUT] = true;
+        } else if (strcmp(argv[i], OUTPUT_FLAG) == 0 && !assigned[OUTPUT]) {
             res.output = (char *)malloc(1 + strlen(argv[i + 1]) + 1);
             strcpy(res.output, argv[i + 1]);
-            output_assigned = true;
-        }
-
-        if (strcmp(argv[i], BLOCK_SIZE_FLAG) == 0 && !block_size_assigned) {
+            assigned[OUTPUT] = true;
+        } else if (strcmp(argv[i], BLOCK_SIZE_FLAG) == 0 && !assigned[BLOCK_SIZE]) {
             if (string_to_int(argv[i + 1], &res.block_size)) {
-                block_size_assigned = true;
+                assigned[BLOCK_SIZE] = true;
             }
-        }
-
-        if (strcmp(argv[i], MAX_DIFF_FLAG) == 0 && !max_diff_assigned) {
+        } else if (strcmp(argv[i], MAX_DIFF_FLAG) == 0 && !assigned[MAX_DIFF]) {
             if (string_to_int(argv[i + 1], &res.max_diff)) {
-                max_diff_assigned = true;
+                assigned[MAX_DIFF] = true;
             }
-        }
-
-        if (strcmp(argv[i], COMPRESS_FLAG) == 0 && !compress_flag_assigned) {
+        } else if (strcmp(argv[i], COMPRESS_FLAG) == 0 && !assigned[COMPRESS]) {
             if (strcmp(argv[i + 1], "true") == 0) {
                 res.compress_flag = true;
             }
-            compress_flag_assigned = true;
+            assigned[COMPRESS] = true;
+        } else {
+            if (res.input) free(res.input);
+            if (res.output) free(res.output);
+
+            jbk_error("Unknown flag");
+            jbk_exit();
         }
     }
 
-    if (!(input_assigned && output_assigned && block_size_assigned && max_diff_assigned)) {
-        if (res.input) {
-            free(res.input);
-        }
-        if (res.output) {
-            free(res.output);
-        }
+    if (!(assigned[INPUT] && assigned[OUTPUT] && assigned[BLOCK_SIZE] && assigned[MAX_DIFF])) {
+        if (res.input) free(res.input);
 
-        if (!input_assigned) {
-            jbk_error("Didn't provide input path");
-        }
+        if (res.output) free(res.output);
 
-        if (!output_assigned) jbk_error("Didn't provide output path");
+        if (!assigned[INPUT]) jbk_error("Didn't provide input path");
 
-        if (!block_size_assigned) jbk_error("Didn't provide block size");
+        if (!assigned[OUTPUT]) jbk_error("Didn't provide output path");
 
-        if (!max_diff_assigned) jbk_error("Didn't provide max difference");
+        if (!assigned[BLOCK_SIZE]) jbk_error("Didn't provide block size");
 
-        if (res.compress_flag && !compress_flag_assigned) jbk_error("Didn't provide appropriate compress flag");
+        if (!assigned[MAX_DIFF]) jbk_error("Didn't provide max difference");
+
+        if (res.compress_flag && !assigned[COMPRESS]) jbk_error("Didn't provide appropriate compress flag");
 
         jbk_exit();
     }
@@ -168,24 +159,27 @@ DecompressArgs decompress_args_slurp(int argc, const char **argv) {
 
     DecompressArgs res = {.input = NULL, .output = NULL};
 
-    bool input_assigned = false;
-    bool output_assigned = false;
+    bool assigned[] = {false, false};
 
     for (int i = 2; i < argc - 1; ++i) {
-        if (strcmp(argv[i], INPUT_FLAG) == 0 && !input_assigned) {
+        if (strcmp(argv[i], INPUT_FLAG) == 0 && !assigned[INPUT]) {
             res.input = (char *)malloc(1 + strlen(argv[i + 1]));
             strcpy(res.input, argv[i + 1]);
-            input_assigned = true;
-        }
-
-        if (strcmp(argv[i], OUTPUT_FLAG) == 0 && !output_assigned) {
+            assigned[INPUT] = true;
+        } else if (strcmp(argv[i], OUTPUT_FLAG) == 0 && !assigned[OUTPUT]) {
             res.output = (char *)malloc(1 + strlen(argv[i + 1]));
             strcpy(res.output, argv[i + 1]);
-            output_assigned = true;
+            assigned[OUTPUT] = true;
+        } else {
+            if (res.input) free(res.input);
+            if (res.output) free(res.output);
+
+            jbk_error("Unknown flag");
+            jbk_exit();
         }
     }
 
-    if (!(input_assigned && output_assigned)) {
+    if (!(assigned[INPUT] && assigned[OUTPUT])) {
         if (res.input) {
             free(res.input);
         }
@@ -193,9 +187,9 @@ DecompressArgs decompress_args_slurp(int argc, const char **argv) {
             free(res.output);
         }
 
-        if (!input_assigned) jbk_error("Didn't provide input path");
+        if (!assigned[INPUT]) jbk_error("Didn't provide input path");
 
-        if (!output_assigned) jbk_error("Didn't provide output path");
+        if (!assigned[OUTPUT]) jbk_error("Didn't provide output path");
 
         jbk_exit();
     }
@@ -250,10 +244,10 @@ void jbk_info(void) {
 
 void jbk_show_info(JBK_Action action, CompressArgs *ca, DecompressArgs *da) {
     switch (action) {
-        case COMPRESS:
+        case COMPRESSING:
             jbk_compress_show_info(ca);
             return;
-        case DECOMPRESS:
+        case DECOMPRESSING:
             jbk_decompress_show_info(da);
             return;
         case INFO:

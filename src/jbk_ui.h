@@ -31,7 +31,7 @@ void jbk_error(const char *format, ...);
  */
 void jbk_exit(void);
 
-typedef enum { COMPRESS, DECOMPRESS, INFO } JBK_Action;
+typedef enum JBK_Action { COMPRESSING, DECOMPRESSING, INFO } JBK_Action;
 
 typedef struct _CompressingArgs {
     char *input;
