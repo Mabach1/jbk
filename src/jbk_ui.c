@@ -74,7 +74,7 @@ JBK_Action jbk_choose_action(const char *fst_arg) {
         return DECOMPRESSING;
     }
 
-    if (!strcmp(fst_arg, "-info")) {
+    if (!strcmp(fst_arg, "info")) {
         return INFO;
     }
 
@@ -94,25 +94,25 @@ CompressArgs compress_args_slurp(int argc, const char **argv) {
 
     bool assigned[] = {false, false, false, false, false};
 
-    for (int i = 1; i < argc - 1; ++i) {
+    for (int i = 2; i < argc - 1; ++i) {
         if (strcmp(argv[i], INPUT_FLAG) == 0 && !assigned[INPUT]) {
             res.input = (char *)malloc(strlen(argv[i + 1]) + 1);
-            strcpy(res.input, argv[i + 1]);
+            strcpy(res.input, argv[++i]);
             assigned[INPUT] = true;
         } else if (strcmp(argv[i], OUTPUT_FLAG) == 0 && !assigned[OUTPUT]) {
             res.output = (char *)malloc(1 + strlen(argv[i + 1]) + 1);
-            strcpy(res.output, argv[i + 1]);
+            strcpy(res.output, argv[++i]);
             assigned[OUTPUT] = true;
         } else if (strcmp(argv[i], BLOCK_SIZE_FLAG) == 0 && !assigned[BLOCK_SIZE]) {
-            if (string_to_int(argv[i + 1], &res.block_size)) {
+            if (string_to_int(argv[++i], &res.block_size)) {
                 assigned[BLOCK_SIZE] = true;
             }
         } else if (strcmp(argv[i], MAX_DIFF_FLAG) == 0 && !assigned[MAX_DIFF]) {
-            if (string_to_int(argv[i + 1], &res.max_diff)) {
+            if (string_to_int(argv[++i], &res.max_diff)) {
                 assigned[MAX_DIFF] = true;
             }
         } else if (strcmp(argv[i], COMPRESS_FLAG) == 0 && !assigned[COMPRESS]) {
-            if (strcmp(argv[i + 1], "true") == 0) {
+            if (strcmp(argv[++i], "true") == 0) {
                 res.compress_flag = true;
             }
             assigned[COMPRESS] = true;
@@ -120,7 +120,7 @@ CompressArgs compress_args_slurp(int argc, const char **argv) {
             if (res.input) free(res.input);
             if (res.output) free(res.output);
 
-            jbk_error("Unknown flag");
+            jbk_error("Unknown flag '%s'", argv[i]);
             jbk_exit();
         }
     }
@@ -130,15 +130,15 @@ CompressArgs compress_args_slurp(int argc, const char **argv) {
 
         if (res.output) free(res.output);
 
-        if (!assigned[INPUT]) jbk_error("Didn't provide input path");
+        if (!assigned[INPUT]) jbk_error("Did not provide input path");
 
-        if (!assigned[OUTPUT]) jbk_error("Didn't provide output path");
+        if (!assigned[OUTPUT]) jbk_error("Did not provide output path");
 
-        if (!assigned[BLOCK_SIZE]) jbk_error("Didn't provide block size");
+        if (!assigned[BLOCK_SIZE]) jbk_error("Incorrect value or did not provide block size");
 
-        if (!assigned[MAX_DIFF]) jbk_error("Didn't provide max difference");
+        if (!assigned[MAX_DIFF]) jbk_error("Incorrect value or did not provide max difference");
 
-        if (res.compress_flag && !assigned[COMPRESS]) jbk_error("Didn't provide appropriate compress flag");
+        if (res.compress_flag && !assigned[COMPRESS]) jbk_error("Did not provide appropriate compress flag");
 
         jbk_exit();
     }
@@ -163,18 +163,18 @@ DecompressArgs decompress_args_slurp(int argc, const char **argv) {
 
     for (int i = 2; i < argc - 1; ++i) {
         if (strcmp(argv[i], INPUT_FLAG) == 0 && !assigned[INPUT]) {
-            res.input = (char *)malloc(1 + strlen(argv[i + 1]));
-            strcpy(res.input, argv[i + 1]);
+            res.input = (char *)malloc(strlen(argv[i + 1]) + 1);
+            strcpy(res.input, argv[++i]);
             assigned[INPUT] = true;
         } else if (strcmp(argv[i], OUTPUT_FLAG) == 0 && !assigned[OUTPUT]) {
-            res.output = (char *)malloc(1 + strlen(argv[i + 1]));
-            strcpy(res.output, argv[i + 1]);
+            res.output = (char *)malloc(strlen(argv[i + 1]) + 1);
+            strcpy(res.output, argv[++i]);
             assigned[OUTPUT] = true;
         } else {
             if (res.input) free(res.input);
             if (res.output) free(res.output);
 
-            jbk_error("Unknown flag");
+            jbk_error("Unknown flag '%s'", argv[i]);
             jbk_exit();
         }
     }
@@ -210,7 +210,7 @@ void jbk_compress_show_info(CompressArgs *args) {
     fprintf(stdout, "  + output - %s\n", args->output);
     fprintf(stdout, "  + block size - %d\n", args->block_size);
     fprintf(stdout, "  + max pixel diff - %d\n", args->max_diff);
-    fprintf(stdout, "  + compressing over u8 max - %s\n", args->compress_flag ? "true" : "false");
+    fprintf(stdout, "  + compressing over u8 max - %s\n\n", args->compress_flag ? "true" : "false");
 }
 
 void jbk_decompress_show_info(DecompressArgs *args) {
@@ -218,7 +218,7 @@ void jbk_decompress_show_info(DecompressArgs *args) {
     fprintf(stdout, "---------------------------------\n");
     fprintf(stdout, "+ Decompression summary:\n");
     fprintf(stdout, "  + input - %s\n", args->input);
-    fprintf(stdout, "  + output - %s\n", args->output);
+    fprintf(stdout, "  + output - %s\n\n", args->output);
 }
 
 void jbk_info(void) {
@@ -227,8 +227,7 @@ void jbk_info(void) {
     fprintf(stdout, "----------------------------------\n");
     fprintf(stdout, "+ Author: Matej Baliga\n");
     fprintf(stdout, "+ Brief\n");
-    fprintf(stdout, "  + Simple CLI application for compressing and decompressing of TGA files into format JBK.\n");
-    fprintf(stdout, "  + JBK is a custom format that works similary to JPEG.\n");
+    fprintf(stdout, "  + A simple command-line interface application designed for de/compressing TGA files from/into JBK format.\n");
     fprintf(stdout, "+ Usage\n");
     fprintf(stdout, "  + Compression\n");
     fprintf(stdout,
@@ -239,7 +238,7 @@ void jbk_info(void) {
             "\t--block-size [block size]\n"
             "\t--COMPRESS_OVER_U8_MAX true (optional)\n");
     fprintf(stdout, "  + Decompression\n");
-    fprintf(stdout, "  - ./jbk decompress --input [path to JBK file] --output [path to TGA file]\n");
+    fprintf(stdout, "  - ./jbk decompress --input [path to JBK file] --output [path to TGA file]\n\n");
 }
 
 void jbk_show_info(JBK_Action action, CompressArgs *ca, DecompressArgs *da) {
