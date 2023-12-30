@@ -203,6 +203,7 @@ void decompress_args_free(DecompressArgs *args) {
 }
 
 void jbk_compress_show_info(CompressArgs *args) {
+    fprintf(stdout, "---------------------------\n");
     fprintf(stdout, "JBK compression of TGA file\n");
     fprintf(stdout, "---------------------------\n");
     fprintf(stdout, "+ Compression summary:\n");
@@ -214,8 +215,9 @@ void jbk_compress_show_info(CompressArgs *args) {
 }
 
 void jbk_decompress_show_info(DecompressArgs *args) {
+    fprintf(stdout, "----------------------------------\n");
     fprintf(stdout, "JBK - decompression into TGA file\n");
-    fprintf(stdout, "---------------------------------\n");
+    fprintf(stdout, "----------------------------------\n");
     fprintf(stdout, "+ Decompression summary:\n");
     fprintf(stdout, "  + input - %s\n", args->input);
     fprintf(stdout, "  + output - %s\n\n", args->output);
