@@ -60,7 +60,7 @@ void jbk_exit(void) {
     exit(EXIT_FAILURE);
 }
 
-JBK_Action jbk_choose_action(const char *fst_arg) {
+JBKAction jbk_choose_action(const char *fst_arg) {
     if (!fst_arg) {
         jbk_error("No arguments provided");
         jbk_exit();
@@ -211,7 +211,7 @@ void jbk_compress_show_info(CompressArgs *args) {
     fprintf(stdout, "  + output - %s\n", args->output);
     fprintf(stdout, "  + block size - %d\n", args->block_size);
     fprintf(stdout, "  + max pixel diff - %d\n", args->max_diff);
-    fprintf(stdout, "  + compressing over u8 max - %s\n\n", args->compress_flag ? "true" : "false");
+    fprintf(stdout, "  + compressing over u8 max - %s\n", args->compress_flag ? "true" : "false");
 }
 
 void jbk_decompress_show_info(DecompressArgs *args) {
@@ -220,7 +220,7 @@ void jbk_decompress_show_info(DecompressArgs *args) {
     fprintf(stdout, "----------------------------------\n");
     fprintf(stdout, "+ Decompression summary:\n");
     fprintf(stdout, "  + input - %s\n", args->input);
-    fprintf(stdout, "  + output - %s\n\n", args->output);
+    fprintf(stdout, "  + output - %s\n", args->output);
 }
 
 void jbk_info(void) {
@@ -240,10 +240,10 @@ void jbk_info(void) {
             "\t--block-size [block size]\n"
             "\t--COMPRESS_OVER_U8_MAX true (optional)\n");
     fprintf(stdout, "  + Decompression\n");
-    fprintf(stdout, "  - ./jbk decompress --input [path to JBK file] --output [path to TGA file]\n\n");
+    fprintf(stdout, "  - ./jbk decompress --input [path to JBK file] --output [path to TGA file]\n");
 }
 
-void jbk_show_info(JBK_Action action, CompressArgs *ca, DecompressArgs *da) {
+void jbk_show_info(JBKAction action, CompressArgs *ca, DecompressArgs *da) {
     switch (action) {
         case COMPRESSING:
             jbk_compress_show_info(ca);

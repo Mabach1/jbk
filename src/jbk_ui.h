@@ -31,7 +31,7 @@ void jbk_error(const char *format, ...);
  */
 void jbk_exit(void);
 
-typedef enum JBK_Action { COMPRESSING, DECOMPRESSING, INFO } JBK_Action;
+typedef enum JBKAction { COMPRESSING, DECOMPRESSING, INFO } JBKAction;
 
 typedef struct _CompressingArgs {
     char *input;
@@ -82,9 +82,9 @@ void decompress_args_free(DecompressArgs *args);
  * @brief   accepts first argument and proceed with de/compression
  *
  * @param   fst_arg
- * @return  JBK_Action
+ * @return  JBKAction
  */
-JBK_Action jbk_choose_action(const char *fst_arg);
+JBKAction jbk_choose_action(const char *fst_arg);
 
 /**
  * @brief   will show info to corresponding arguments
@@ -95,6 +95,6 @@ JBK_Action jbk_choose_action(const char *fst_arg);
  * @param   compression_args (can be optional, => NULL)
  * @param   decompression_args (can be optional, => NULL)
  */
-void jbk_show_info(JBK_Action action, CompressArgs *compression_args, DecompressArgs *decompression_args);
+void jbk_show_info(JBKAction action, CompressArgs *compression_args, DecompressArgs *decompression_args);
 
 #endif /* JBK_JBK_UI */
