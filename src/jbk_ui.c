@@ -23,9 +23,9 @@ int string_to_int(const char *str, int *number) {
     size_t length = strlen(str);
 
     // not very useful in our case
-    // while (index < length && (str[index] == ' ' || str[index] == '\t')) {
-    //     ++index;
-    // }
+    while (index < length && (str[index] == ' ' || str[index] == '\t')) {
+        ++index;
+    }
 
     if (index < length && (str[index] == '-' || str[index] == '+')) {
         sign = str[index] == '-' ? -1 : 1;
