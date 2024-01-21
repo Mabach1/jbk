@@ -44,8 +44,8 @@ TGAFile tga_open_file(const char *filename) {
 
     file.header = tga_load_header(file_ptr);
 
-    // check if its and uncompressed 24-bit or 32-bit TGA image
-    if (file.header.image_type != 2 && file.header.image_type != 10) {
+    // uncompressed 24-bit tga image 
+    if (file.header.image_type != 2) {
         jbk_error("Unsupported TGA format");
         jbk_exit();
     }
